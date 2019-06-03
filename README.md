@@ -1,0 +1,2 @@
+# aplikacja
+aplikacja do zarzadzania
