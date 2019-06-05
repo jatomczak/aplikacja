@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section id="footer_widget" class="footer_widget">
+<section id="login" class="portfolio">
+            <div class="container">
+                <div class="row">
+                     <div class="main_slider text-center">
+                        <div class="col-md-12">
+                            <div class="head_title text-center">
+                                <h4>Podaj email i hasło</h4>
+                                <form method="post">
+                                  {% csrf_token %}
+                                  {{ form.as_p }}
+                                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                                  <button type="submit" class="btn-lg2" >Login</button>
+                                </form>
+                                <p></p>
+-                                <h6>Nie masz konta? Zarejestruj się przez  <a href="{% url 'clients:add_new_user' %}#add_new_user">formularz rejestracji</a>
+                            </div>
+                        </div>
+                     </div>
+				</div>
+            </div>
+</section></section>
+{% endblock content %}
