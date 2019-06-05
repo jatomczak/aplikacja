@@ -1,8 +1,6 @@
 from django.test import TestCase, Client
-from django.http import HttpRequest, QueryDict
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
-from django.db.utils import IntegrityError
+from django.http import HttpRequest
+from django.shortcuts import reverse
 from .models import User
 from .forms import RegisterForm
 from .views import add_new_user
@@ -107,7 +105,8 @@ class RegistrationViewTest(TestCase):
         request.POST['password1'] = 'admin'
         request.POST['password2'] = 'admin'
         response = add_new_user(request)
-        self.assertIn(b'dziala', response.content)
+        response.client = self.client
+        self.assertRedirects(response, reverse('clients:login'), status_code=302, target_status_code=302)
 
     def test_password_doesnt_match(self):
         request = HttpRequest()
