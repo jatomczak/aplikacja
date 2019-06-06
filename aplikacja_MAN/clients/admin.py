@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .forms import UserAdminCreationForm, UserAdminChangeForm
-from .models import User, Company
+from .models import User, Group
 
 
 class ClientAdmin(BaseUserAdmin):
@@ -25,6 +25,8 @@ class ClientAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ('group_name',)
 
 admin.site.register(User, ClientAdmin)
-admin.site.register(Company)
+admin.site.register(Group, GroupAdmin)

@@ -1,13 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
-class Company(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    address = models.CharField(max_length=255)
-    test2 = models.CharField(max_length=100)
+
+class Group(models.Model):
+    group_name = models.CharField(max_length=100, unique=True)
+    coordinator_name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return self.group_name
+
 
 
 class ClientManager(BaseUserManager):
@@ -49,7 +50,7 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=100)
     active = models.BooleanField(default=True)
-    group = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True)
+    group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
 
