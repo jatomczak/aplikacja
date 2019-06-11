@@ -87,7 +87,7 @@ Main components
 #cd-intro {
   position: relative;
   height: 100%;
-  background: url("http://i64.tinypic.com/2vbok11.jpg") no-repeat center center;
+  background: url('../images/man-menu.jpg') no-repeat center center;
   background-size: cover;
 }
 #cd-intro h1 {
@@ -402,4 +402,94 @@ Main components
 .icon-menu{   
     margin-right: 15px;
     font-size: 25px;
+}
+
+.standard-button {
+	-moz-box-shadow: 0px 10px 14px -7px #000000;
+	-webkit-box-shadow: 0px 10px 14px -7px #000000;
+	box-shadow: 0px 10px 14px -7px #000000;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #6d6f75), color-stop(1, #1f2229));
+	background:-moz-linear-gradient(top, #6d6f75 5%, #1f2229 100%);
+	background:-webkit-linear-gradient(top, #6d6f75 5%, #1f2229 100%);
+	background:-o-linear-gradient(top, #6d6f75 5%, #1f2229 100%);
+	background:-ms-linear-gradient(top, #6d6f75 5%, #1f2229 100%);
+	background:linear-gradient(to bottom, #6d6f75 5%, #1f2229 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#6d6f75', endColorstr='#1f2229',GradientType=0);
+	background-color:#6d6f75;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	border-radius:8px;
+	border:3px ridge #d00037;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	padding:13px 32px;
+	text-decoration:none;
+	text-shadow:0px 1px 9px #000000;
+}
+
+.standard-button2{
+    border:2px solid #d00037 !important;
+}
+
+.standard-button:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #1f2229), color-stop(1, #6d6f75));
+	background:-moz-linear-gradient(top, #1f2229 5%, #6d6f75 100%);
+	background:-webkit-linear-gradient(top, #1f2229 5%, #6d6f75 100%);
+	background:-o-linear-gradient(top, #1f2229 5%, #6d6f75 100%);
+	background:-ms-linear-gradient(top, #1f2229 5%, #6d6f75 100%);
+	background:linear-gradient(to bottom, #1f2229 5%, #6d6f75 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1f2229', endColorstr='#6d6f75',GradientType=0);
+	background-color:#1f2229;
+    color: white;
+}
+.standard-button:active {
+	position:relative;
+	bottom: 1px; 
+    color: #dcdcdc;
+}
+
+.login-body{
+  position: relative;
+  height: 100%;
+  background: url('../images/man-menu.jpg') no-repeat center center;
+  background-size: cover;
+}
+
+.login-window{
+
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #3a393f;
+  color: white;
+    border:3px ridge #d00037;
+}
+
+.login-window h1 {
+  text-align: center;
+  font-size: 100px !important;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0px 0px 10px #D00039;    
+  margin-top: 15px;
+  margin-bottom: 60px; 
+}
+
+.login-window h4{
+ margin-bottom: 25px;    
+}
+
+.login-window a{
+    font-weight: bold;
+}
+
+.login-window a:hover{
+    color: #D00039;
+}
+
+.login-button{
+    margin-top: 25px;
+    margin-bottom: 50px;
 }
