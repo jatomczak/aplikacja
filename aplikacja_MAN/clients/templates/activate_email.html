@@ -1,0 +1,5 @@
+{% autoescape off %}
+Cześć {{ user.name }},
+Kliknij w link, by potwierdzić swój adres email
+http://{{ domain }}{% url 'clients:activate' id=uid token=token %}
+{% endautoescape %}

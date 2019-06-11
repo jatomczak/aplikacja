@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<body class="login-body">
+    <div class="container login-window text-center">            
+        <h1>Rejestracja</h1>
+        <h4>Zarejestuj się wypełniając odpowiednie pola. </h4>
+            <form method='POST' action="{%block form_action%}{% endblock%}" >
+                {% for item in form %}
+                <p>{{ item }}</p>                                
+                {% csrf_token %}                                       
+                {% endfor %}
+                {%for field in form %}
+                {% if field.errors %} <li> {{ field.label }}: {{field.errors}} </li>{%endif %}
+                {%endfor %}                    
+             <button type="submit" class="btn-lg2 standard-button login-button">  Zarejestruj się </button>
+        </form>
+    </div>
+</body>
+{% endblock content %}
