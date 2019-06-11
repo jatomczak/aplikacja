@@ -2,28 +2,21 @@
 
 
 {% block content %}
-<section id="add_new_user" class="portfolio">
-    <div class="container">
-        <div class="row">
-                     <div class="main_slider text-center">
-                        <div class="col-md-12">
-                            <div class="head_title text-center">
-                                <h4>Witaj! Zarejestuj się </h4>
-                                    <form method='POST' action="{%block form_action%}{% endblock%}" >
 
-                                    {% for item in form %}
-                                        <p>{{ item }}</p>
-                                        {% csrf_token %}
-                                    {% endfor %}
-
-                                    {%for field in form %}
-
-                                    {% if field.errors %} <li> {{ field.label }}: {{field.errors}} </li>{%endif %}
-
-                                    {%endfor %}
-             <button type="submit" class="btn-lg2">  OK </button>
-        </form></div></div></div>
+<body class="login-body">
+    <div class="container login-window text-center">            
+        <h1>Rejestracja</h1>
+        <h4>Zarejestuj się wypełniając odpowiednie pola. </h4>
+            <form method='POST' action="{%block form_action%}{% endblock%}" >
+                {% for item in form %}
+                <p>{{ item }}</p>                                
+                {% csrf_token %}                                       
+                {% endfor %}
+                {%for field in form %}
+                {% if field.errors %} <li> {{ field.label }}: {{field.errors}} </li>{%endif %}
+                {%endfor %}                    
+             <button type="submit" class="btn-lg2 standard-button login-button">  Zarejestruj się </button>
+        </form>
     </div>
-</section>
-
+</body>
 {% endblock content %}
