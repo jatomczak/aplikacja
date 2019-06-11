@@ -33,7 +33,6 @@ def add_new_user(request):
 @login_required()
 def login_view(request):
     # messages.info(request, "Zostałeś poprawnie zalogowany")
-    # next_page = request.POST.get('next', '/')
-    # return HttpResponseRedirect(next_page)
-    return HttpResponse('test')
+    next_page = request.POST.get('next', '/')
+    return HttpResponseRedirect(next_page)
 
