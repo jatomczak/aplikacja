@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'clients',
     'planowanie',
+    'schedule',
 ]
 
 AUTH_USER_MODEL = 'clients.User'
