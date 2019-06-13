@@ -1,4 +1,8 @@
+from django.urls import path
+from . import views
 
 app_name = 'schedule'
 
-urlpatterns = []
+urlpatterns = [
+    path('', views.home_view)
+]
