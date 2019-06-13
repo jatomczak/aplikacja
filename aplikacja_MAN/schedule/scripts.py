@@ -3,8 +3,7 @@ from datetime import date
 import holidays
 from . import users_list
 
-PATH_TO_DATA_FOLDER = "\\\\Mnplposksv01\\btlp-btlpze\\Kapa-Planung Elektrik\\Harmonogram 2019\\BAZA"
-PATH_TO_USER_FILE = "\\\\Mnplposksv01\\btlp-btlpze\\Kapa-Planung Elektrik\\Harmonogram 2019\\BAZA\\%s.txt"
+PATH_TO_USER_FILE = "\\\\Mnplposksv01\\btlp-btlpze\\Kapa-Planung Elektrik\\Harmonogram 2019\\BAZA2\\%s.txt"
 
 list_with_user_id_and_initials ={'SOFTWARE': users_list.SOFTWARE,
                                  'HARDWARE': users_list.HARDWARE,
@@ -74,12 +73,16 @@ def remove_new_line_char(tekst):
 def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), date_to=date(2019, 12, 31), name_of_holiday='urlopy'):
     list_of_vacations = {}
     for user_id, surname in list_with_user_id_and_initials[department].items():
-        user_file = open_harm_file_for_user(user_id)
-        list_of_vacations[surname] = get_user_holiday(
-            user_file,
-            name_of_holiday=name_of_holiday,
-            date_from=date_from,
-            date_to=date_to,
-        )
+        try:
+            user_file = open_harm_file_for_user(user_id)
+            list_of_vacations[surname] = get_user_holiday(
+                user_file,
+                name_of_holiday=name_of_holiday,
+                date_from=date_from,
+                date_to=date_to,
+            )
+        except FileNotFoundError:
+            list_of_vacations[surname] = {'error':"Nie znaleziono pliku"}
+
 
     return list_of_vacations
