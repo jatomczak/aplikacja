@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, AuthenticationForm, UsernameField
 from .models import User
 
 EMPTY_ELEMENT = "Pole %s nie może być puste"
@@ -81,3 +81,18 @@ class UserAdminCreationForm(forms.ModelForm):
 class UserAdminChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    password = forms.CharField(
+        label=("Hasło"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={
+            'placeholder':'wpisz hasło'
+        }),
+    )
+    error_messages = {
+        'invalid_login': ('Wprowadż poprawne hasło. Wielkośc liter może mieć znaczenie.'),
+        'inactive': ("Twoje konto jest nieaktywne."),
+    }
+    username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': 'wpisz adres email'}))
