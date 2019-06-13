@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HARMONOGRAM</title>
+</head>
+<body>
+<table>
+{% for user_name, vacations_list in result.items%}
+	{% if vacations_list.items %}
+		<tr><td>{{user_name}}</td></tr>
+	{% endif %}
+	{%for date, hours in vacations_list.items%}
+	<tr>
+		<td>{{date}}</td>
+		<td>{{hours}}</td>
+	</tr>
+	{% endfor %}
+{% endfor %}
+</table>
+</body>
+</html>

@@ -1,14 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from clients.models import User
-# Create your views here.
+from . import scripts
 
 @login_required
 def home_view(request):
-    department = request.user.group
-    user_list = User.objects.filter(group=department)
-    user_id_list = []
-    for user in user_list:
-        user_id_list.append(user.user_id)
-    return HttpResponse(user_id_list)
+    department_name = request.user.group.group_name
+    holidays_list = scripts.get_data_from_harm_for_user(department=department_name)
+    return render(request, 'home.html', {'result': holidays_list})
