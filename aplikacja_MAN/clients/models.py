@@ -49,6 +49,7 @@ class User(AbstractBaseUser):
     email = models.CharField(max_length=100, default=None, unique=True)
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=100)
+    user_id = models.CharField(max_length=6, default='')
     active = models.BooleanField(default=True)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
     staff = models.BooleanField(default=False)

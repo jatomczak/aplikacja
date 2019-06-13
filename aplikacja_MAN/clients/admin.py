@@ -9,16 +9,16 @@ class ClientAdmin(BaseUserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
 
-    list_display = ('email', 'name', 'group', 'surname', 'active', 'staff')
+    list_display = ('email', 'user_id', 'name', 'group', 'surname', 'active', 'staff')
     list_filter = ('group', 'staff')
     fieldsets = (
-        (None, {'fields': ('email', 'name', 'group', 'surname', 'active', 'staff')}),
+        (None, {'fields': ('email', 'name', 'user_id', 'group', 'surname', 'active', 'staff')}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'group', 'password1', 'password2', 'name', 'surname', 'active', 'staff')}
+            'fields': ('email', 'group', 'password1', 'password2', 'name', 'surname', 'user_id', 'active', 'staff')}
         ),
     )
     search_fields = ('email',)

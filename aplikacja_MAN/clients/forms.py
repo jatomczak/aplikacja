@@ -17,7 +17,7 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email','name', 'surname', 'group')
+        fields = ('email','name', 'surname', 'user_id', 'group')
         widgets = {
                 'email': forms.fields.EmailInput(attrs={
                     'placeholder':'wpisz adres email',}),
@@ -25,6 +25,8 @@ class RegisterForm(forms.ModelForm):
                     'placeholder': 'wpisz imię',}),
                 'surname': forms.fields.TextInput(attrs={
                     'placeholder':'wpisz nazwisko',}),
+                'user_id': forms.fields.TextInput(attrs={
+                    'placeholder':'wpisz id użytkownika',}),
         }
         error_messages = {
             'email': {'required' : EMPTY_ELEMENT%'adres email',}
