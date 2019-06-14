@@ -3,7 +3,7 @@ from datetime import date
 import holidays
 from . import users_list
 
-PATH_TO_USER_FILE = "\\\\Mnplposksv01\\btlp-btlpze\\Kapa-Planung Elektrik\\Harmonogram 2019\\BAZA2\\%s.txt"
+PATH_TO_USER_FILE = "\\\\Mnplposksv01\\btlp-btlpze\\Kapa-Planung Elektrik\\Harmonogram 2019\\BAZA\\%s.txt"
 
 list_with_user_id_and_initials ={'SOFTWARE': users_list.SOFTWARE,
                                  'HARDWARE': users_list.HARDWARE,

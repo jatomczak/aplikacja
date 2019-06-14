@@ -5,6 +5,15 @@
     <title>HARMONOGRAM</title>
 </head>
 <body>
+<div>
+	<form method="post">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<input type="hidden" name="next" value="{{ request.GET.next }}">
+		<button type="submit" class="btn-lg2 standard-button login-button" >Załaduj</button>
+	</form>
+</div>
+
 <table>
 {% for user_name, vacations_list in result.items%}
 	{% if vacations_list.items %}
