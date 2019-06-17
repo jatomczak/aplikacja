@@ -14,18 +14,21 @@
 	</form>
 </div>
 
-<table>
-{% for user_name, vacations_list in result.items%}
-	{% if vacations_list.items %}
-		<tr><td>{{user_name}}</td></tr>
-	{% endif %}
-	{%for date, hours in vacations_list.items%}
-	<tr>
-		<td>{{date}}</td>
-		<td>{{hours}}</td>
-	</tr>
-	{% endfor %}
-{% endfor %}
+<table border="True">
+	{%if period_length%}
+		<th>Name</th>
+	{%endif%}
+	{%for date in period_length%}
+	<th>{{date|slice:"5:"}}</th>
+	{%endfor%}
+    {% for name, list in data.items %}
+    <tr id='{{name}}'>
+		<td>{{name}}</td>
+		{%for date in period_length %}
+			<td {% if date in list %} bgcolor="Red"{%endif%} >8</td>
+		{%endfor%}
+    </tr>
+    {% endfor %}
 </table>
 </body>
 </html>
