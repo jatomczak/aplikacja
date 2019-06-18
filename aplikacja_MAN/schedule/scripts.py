@@ -2,6 +2,10 @@ import datetime
 from datetime import date
 import holidays
 from . import users_list
+from datetime import datetime, timedelta
+
+
+DATE_FORMAT = '%Y-%m-%d'
 
 PATH_TO_USER_FILE = "\\\\Mnplposksv01\\btlp-btlpze\\Kapa-Planung Elektrik\\Harmonogram 2019\\BAZA\\%s.txt"
 
@@ -17,6 +21,14 @@ type_of_holiday = {'urlopy': ['5', '6', '7','8', '16', '17', '19'],
                    'hours_plus': '3',
                    'hours_minus': '4'}
 
+def convert_string_to_date(date:str):
+    return datetime.strptime(date, DATE_FORMAT).date()
+
+def create_date_range_list(date_from, num_days):
+    date_list = []
+    for i in range(0,num_days):
+        date_list.append(str(date_from + timedelta(days=i)))
+    return date_list
 
 def open_harm_file_for_user(user_id):
     return open(PATH_TO_USER_FILE % user_id, 'r')
