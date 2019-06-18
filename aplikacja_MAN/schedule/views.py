@@ -19,9 +19,9 @@ def create_date_range_list(date_from, num_days):
 
 @login_required
 def home_view(request):
-    department_name = request.user.group.group_name
     form = SelectTimeRangeForm
     if request.method == 'POST':
+        department_name = request.user.group.group_name
         date_from = convert_string_to_date(request.POST['date_from'])
         date_to = convert_string_to_date( request.POST['date_to'])
         period_length = (date_to - date_from).days + 1
