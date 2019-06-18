@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from .forms import SelectTimeRangeForm
 from . import scripts
 from datetime import datetime, timedelta
-from datetime import date
 
 DATE_FORMAT = '%Y-%m-%d'
 
@@ -22,7 +21,6 @@ def create_date_range_list(date_from, num_days):
 def home_view(request):
     department_name = request.user.group.group_name
     form = SelectTimeRangeForm
-    holidays_list = scripts.get_data_from_harm_for_user(department=department_name)
     if request.method == 'POST':
         date_from = convert_string_to_date(request.POST['date_from'])
         date_to = convert_string_to_date( request.POST['date_to'])
