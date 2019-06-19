@@ -3,10 +3,13 @@ from django.http import HttpRequest
 from unittest.mock import MagicMock
 
 from clients.models import User, Group
-from . import views, scripts
+from . import views, scripts, forms
 
 class ScheduleFormTest(TestCase):
-    pass
+    def test_incorrect_date_range(self):
+        form = forms.SelectTimeRangeForm(data={'date_from':'2019-02-01', 'date_to':'2019-02-01'})
+        self.assertFalse(form.is_valid())
+
 
 class TestScheduleViews(TestCase):
     def setUp(self):

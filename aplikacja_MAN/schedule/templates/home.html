@@ -8,7 +8,14 @@
 <div>
 	<form method="post">
 		{% csrf_token %}
-		{{ form.as_p }}
+		{% for item in form %}
+			<p>{{ item.label }} {{ item }}</p>
+			{% csrf_token %}
+		{% endfor %}
+
+		{%for field in form %}
+			{% if field.errors %} <p> {{ field.label }}: {{field.errors}} </p>{%endif %}
+		{%endfor %}
 		<input type="hidden" name="next" value="{{ request.GET.next }}">
 		<button type="submit" class="btn-lg2 standard-button login-button" >Załaduj</button>
 	</form>

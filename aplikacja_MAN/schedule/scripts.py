@@ -36,7 +36,7 @@ def open_harm_file_for_user(user_id):
 
 def convert_day_of_year_to_date(day_of_year):
     first_day_of_year = date(2019,1,1)
-    delta_time = datetime.timedelta(days = day_of_year)
+    delta_time = timedelta(days = day_of_year)
     return first_day_of_year + delta_time
 
 
@@ -59,7 +59,7 @@ def get_user_holiday(user_file, name_of_holiday='urlopy', date_from=date(2019,1,
             if day_of_year >= 0:
                 day = convert_day_of_year_to_date(day_of_year)
                 if is_date_in_range(day, date_from, date_to):
-                    if not datetime.datetime.weekday(day) in [day_of_week['SAT'], day_of_week['SUN']]:
+                    if not datetime.weekday(day) in [day_of_week['SAT'], day_of_week['SUN']]:
                         if not is_holiday(day):
                             if tekst_line in type_of_holiday[name_of_holiday]:
                                 list_of_holiday[day.isoformat()] = 8
