@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.contrib.auth.decorators import login_required
 from .forms import SelectTimeRangeForm
 from . import scripts
@@ -33,3 +33,8 @@ def home_view(request):
             return render(request, 'home.html', {'form': form})
     else:
         return render(request, 'home.html', {'form': form})
+
+def upload(request):
+    csv_to_db = scripts.CsvToDb()
+    csv_to_db.import_task()
+    return HttpResponse('poprawnie zaladowano')

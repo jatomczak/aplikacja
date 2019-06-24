@@ -3,6 +3,8 @@ from datetime import date
 import holidays
 from . import users_list
 from datetime import datetime, timedelta
+import csv
+from .models import VacationInProject
 
 
 DATE_FORMAT = '%Y-%m-%d'
@@ -98,3 +100,20 @@ def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), dat
 
 
     return list_of_vacations
+
+
+class CsvToDb:
+    file_path = 'test_vacations.csv'
+    date_format = '%d.%m.%Y'
+
+    def import_task(self):
+        with open(self.file_path) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=';')
+            for vacation_date,  hours, user_name, unique_id  in csv_reader:
+                vacation = VacationInProject()
+                vacation.vacation_date = datetime.strptime(vacation_date, self.date_format)
+                vacation.user_name = user_name
+                vacation.hours = hours
+                vacation.unique_id = unique_id
+                vacation.save()
+

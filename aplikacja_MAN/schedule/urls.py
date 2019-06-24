@@ -5,4 +5,5 @@ app_name = 'schedule'
 
 urlpatterns = [
     path('', views.home_view),
+    path('upload', views.upload)
 ]
