@@ -1,5 +1,5 @@
-from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib.auth import login, logout
+from django.http import HttpResponseRedirect
+from django.contrib.auth import logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -19,7 +19,6 @@ def add_new_user(request):
         form = RegisterForm(data=request.POST)
         if form.is_valid():
             form.save()
-            # messages.info(request, "Zostales zarejestrowany")
             return redirect(reverse('clients:login'))
         else:
             return render(request, 'add_new_user.html',{
@@ -32,7 +31,6 @@ def add_new_user(request):
 
 @login_required()
 def login_view(request):
-    # messages.info(request, "Zostałeś poprawnie zalogowany")
     next_page = request.POST.get('next', '/')
     return HttpResponseRedirect(next_page)
 
