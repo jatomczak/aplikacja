@@ -34,7 +34,10 @@ def home_view(request):
     else:
         return render(request, 'home.html', {'form': form})
 
+
+@login_required
 def upload(request):
     csv_to_db = scripts.CsvToDb()
-    csv_to_db.import_task()
-    return HttpResponse('poprawnie zaladowano')
+    user = request.user
+    csv_to_db.import_task(user)
+    return HttpResponse('test')

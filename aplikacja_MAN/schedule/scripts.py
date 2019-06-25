@@ -4,7 +4,7 @@ import holidays
 from . import users_list
 from datetime import datetime, timedelta
 import csv
-from .models import VacationInProject
+from .models import VacationDetails, VacationsList
 
 
 DATE_FORMAT = '%Y-%m-%d'
@@ -106,14 +106,20 @@ class CsvToDb:
     file_path = 'test_vacations.csv'
     date_format = '%d.%m.%Y'
 
-    def import_task(self):
+    def import_task(self, owner):
+        vacation_list = VacationsList()
+        vacation_list.owner = owner
+        vacation_list.save()
         with open(self.file_path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=';')
-            for vacation_date,  hours, user_name, unique_id  in csv_reader:
-                vacation = VacationInProject()
+            for vacation_date,  hours, user_name, unique_id in csv_reader:
+                vacation = VacationDetails()
                 vacation.vacation_date = datetime.strptime(vacation_date, self.date_format)
                 vacation.user_name = user_name
                 vacation.hours = hours
                 vacation.unique_id = unique_id
+                vacation.list = vacation_list
                 vacation.save()
 
+    def check_if_task_exist(self):
+        pass
