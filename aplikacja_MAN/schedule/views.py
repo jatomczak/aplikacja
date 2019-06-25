@@ -1,15 +1,17 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .forms import SelectTimeRangeForm
+from .forms import SelectTimeRangeForm, UploadFileForm
 from . import scripts
 from datetime import datetime, timedelta
 
+from .scripts import handle_uploaded_file
 
 def create_date_range_list(date_from, num_days):
     date_list = []
     for i in range(0,num_days):
         date_list.append(str(date_from + timedelta(days=i)))
     return date_list
+
 
 
 @login_required
@@ -36,8 +38,12 @@ def home_view(request):
 
 
 @login_required
-def upload(request):
-    csv_to_db = scripts.CsvToDb()
-    user = request.user
-    csv_to_db.import_task(user)
-    return HttpResponse('test')
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+            return HttpResponseRedirect('/')
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload.html', {'form': form})

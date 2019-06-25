@@ -20,3 +20,8 @@ class SelectTimeRangeForm(forms.ModelForm):
     def clean_date_from(self):
         date_from = self.cleaned_data.get('date_from')
         return date_from
+
+
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    file = forms.FileField()

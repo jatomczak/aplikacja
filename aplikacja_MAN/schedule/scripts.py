@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import csv
 from .models import VacationDetails, VacationsList
 
+from aplikacja_MAN.settings import UPLOAD_FILE_PATH
 
 DATE_FORMAT = '%Y-%m-%d'
 
@@ -101,6 +102,11 @@ def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), dat
 
     return list_of_vacations
 
+
+def handle_uploaded_file(f):
+    with open(UPLOAD_FILE_PATH + 'test.csv', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 class CsvToDb:
     file_path = 'test_vacations.csv'
