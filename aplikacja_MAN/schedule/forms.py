@@ -14,7 +14,7 @@ class SelectTimeRangeForm(forms.ModelForm):
         date_from = self.cleaned_data.get('date_from')
         date_to = self.cleaned_data.get('date_to')
         if date_to and date_from and date_from > date_to:
-            raise forms.ValidationError("Bledny zakres dat")
+            raise forms.ValidationError("Blędny zakres dat")
         return date_to
 
     def clean_date_from(self):
