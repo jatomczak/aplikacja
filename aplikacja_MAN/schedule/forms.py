@@ -38,9 +38,7 @@ class SelectTimeRangeForm(forms.ModelForm):
         return date_from
 
 
-class UploadFileForm(forms.Form):
-    file = forms.FileField()
-
+class UploadFileForm(forms.ModelForm):
     class Meta:
         model = VacationsList
-        fields = ('name', 'date_from', 'date_to')
+        fields = ('name', 'date_from', 'date_to', 'file')

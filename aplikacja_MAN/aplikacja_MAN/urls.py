@@ -20,7 +20,7 @@ from clients.forms import CustomAuthenticationForm
 from .views import index_view
 
 urlpatterns = [
-    path('', index_view),
+    path('', index_view, name='index'),
     path('admin/', admin.site.urls),
     path('clients/', include('clients.urls')),
     path('accounts/login/', auth_views.LoginView.as_view(authentication_form=CustomAuthenticationForm)),

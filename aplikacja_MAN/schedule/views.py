@@ -1,6 +1,7 @@
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from .forms import SelectTimeRangeForm, UploadFileForm
+from .models import VacationsList
 from . import scripts
 from datetime import datetime, timedelta
 
@@ -49,7 +50,18 @@ def upload_file(request):
     return render(request, 'upload.html', {'form': form})
 
 def upload_schedule(request):
-    return render(request, 'upload_schedule.html')
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.owner = request.user
+            post.save()
+            return redirect('index')
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload_schedule.html',{
+        'form': form,
+    })
 
 def schedule_list(request):
     return render(request, 'schedule_list.html')
