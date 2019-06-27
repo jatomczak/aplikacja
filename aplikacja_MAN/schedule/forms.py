@@ -27,6 +27,10 @@ class SelectTimeRangeForm(forms.ModelForm):
         date_to = self.cleaned_data.get('date_to')
         if date_to and date_from and date_from > date_to:
             raise forms.ValidationError("Blędny zakres dat")
+
+        if (date_to - date_from).days > 31:
+            raise forms.ValidationError("Maksymalny przedział nie może być dłuższy niż 31 dni.")
+
         return date_to
 
     def clean_date_from(self):
