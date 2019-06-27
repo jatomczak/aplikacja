@@ -9,6 +9,18 @@ class SelectTimeRangeForm(forms.ModelForm):
     class Meta:
         model = VacationTimeRangeModel
         fields = ('date_from', 'date_to')
+        labels = {
+            'date_from': 'Data od',
+            'date_to': 'Data do',
+        }
+        widgets = {
+            'date_from': forms.DateInput(attrs={
+                'type': 'date',
+            }),
+            'date_to': forms.DateInput(attrs={
+                'type': 'date'
+            }),
+        }
 
     def clean_date_to(self):
         date_from = self.cleaned_data.get('date_from')
