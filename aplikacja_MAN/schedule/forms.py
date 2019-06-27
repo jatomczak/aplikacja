@@ -1,5 +1,5 @@
 from django import forms
-from .models import VacationTimeRangeModel
+from .models import VacationTimeRangeModel, VacationsList
 from datetime import datetime, timedelta
 
 
@@ -23,5 +23,8 @@ class SelectTimeRangeForm(forms.ModelForm):
 
 
 class UploadFileForm(forms.Form):
-    title = forms.CharField(max_length=50)
     file = forms.FileField()
+
+    class Meta:
+        model = VacationsList
+        fields = ('name', 'date_from', 'date_to')

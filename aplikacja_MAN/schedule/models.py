@@ -7,8 +7,12 @@ class VacationTimeRangeModel(models.Model):
     date_from = models.DateField(default=timezone.now())
     date_to = models.DateField(default=timezone.now())
 
-class VacationsList(models.Model):
+class VacationsList(VacationTimeRangeModel):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        unique_together = ('owner', 'name')
 
 class VacationDetails(models.Model):
     vacation_date = models.DateField(default=timezone.now())
