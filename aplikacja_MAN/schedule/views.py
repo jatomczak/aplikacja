@@ -47,3 +47,9 @@ def upload_file(request):
     else:
         form = UploadFileForm()
     return render(request, 'upload.html', {'form': form})
+
+def upload_schedule(request):
+    return render(request, 'upload_schedule.html')
+
+def schedule_list(request):
+    return render(request, 'schedule_list.html')
