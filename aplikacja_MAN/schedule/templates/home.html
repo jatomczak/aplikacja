@@ -11,11 +11,13 @@
    
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	{% load static %}
+	<link href="{% static 'css/vivify.min.css' %}" rel="stylesheet" type="text/css"/>
     
 </head>
 <body class="harm-body">
 <div class="fluid-container text-center">
-<div class="container harm-window">
+<div class="container harm-window  vivify  pullUp">
 
 <h1>HARMONOGRAM</h1>
 
@@ -30,11 +32,11 @@
 			{% if field.errors %} <p> {{ field.label }}: {{field.errors}} </p>{%endif %}
 		{%endfor %}
 		<input type="hidden" name="next" value="{{ request.GET.next }}">
-		<button type="submit" class=" standard-button" >Załaduj</button>
+		<button type="submit" class=" standard-button fadeIn" >Załaduj</button>
 	</form>
 </div>
 
-<table class="harm-table">
+<table class="harm-table vivify  fadeInBottom">
 	{%if period_length%}
 		<th>NAZWISKO</th>
 	{%endif%}
