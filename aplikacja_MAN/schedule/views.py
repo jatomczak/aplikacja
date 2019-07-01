@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from .forms import SelectTimeRangeForm, UploadFileForm, CompareVacationsListForm
-from .models import VacationsList
+from .models import VacationsList, VacationDetails
 from . import scripts
 from datetime import datetime, timedelta
+import csv
 
 from .scripts import handle_uploaded_file
 
@@ -48,13 +49,27 @@ def upload_file(request):
         form = UploadFileForm()
     return render(request, 'upload.html', {'form': form})
 
+
 def upload_schedule(request):
+    date_format = '%d.%m.%Y'
+
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.owner = request.user
-            post.save()
+            vacations_list = form.save(commit=False)
+            vacations_list.owner = request.user
+            vacations_list.save()
+
+            with open(vacations_list.file.path) as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=';')
+                for vacation_date, hours, user_name, unique_id in csv_reader:
+                    vacation = VacationDetails()
+                    vacation.vacation_date = datetime.strptime(vacation_date, date_format)
+                    vacation.user_name = user_name
+                    vacation.hours = hours
+                    vacation.unique_id = unique_id
+                    vacation.list = vacations_list
+                    vacation.save()
             return redirect('schedule:schedule_list')
     else:
         form = UploadFileForm()
@@ -76,11 +91,13 @@ def schedules_compare(request):
     if request.method == 'POST':
         form = CompareVacationsListForm(owner=request.user, data=request.POST)
         if form.is_valid():
-            first_list = VacationsList.objects.get(id=request.POST['first_list'])
-            second_list = VacationsList.objects.get(id=request.POST['second_list'])
+            first_list_id = request.POST['first_list']
+            second_list_id = request.POST['second_list']
+            first_vacations_list = VacationsList.objects.get(id=first_list_id)
+            second_vacations_list = VacationsList.objects.get(id=second_list_id)
+            all_vacations = VacationDetails.objects.filter(list=first_vacations_list)
             return render(request, 'compare_schedules.html', {
-                'first_list': first_list,
-                'second_list': second_list,
+                'all_vacations': all_vacations,
             })
 
     return redirect('schedule:schedule_list')

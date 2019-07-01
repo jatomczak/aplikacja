@@ -113,9 +113,6 @@ class CsvToDb:
     date_format = '%d.%m.%Y'
 
     def import_task(self, owner):
-        vacation_list = VacationsList()
-        vacation_list.owner = owner
-        vacation_list.save()
         with open(self.file_path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=';')
             for vacation_date,  hours, user_name, unique_id in csv_reader:

@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {%block content%}
-
-{{first_list}}
-{{second_list}}
+<table>
+    {%for vacation in all_vacations%}
+    <tr>
+        <td>{{vacation.vacation_date}}</td>
+        <td>{{vacation.hours}}</td>
+    </tr>
+    {%endfor%}
+</table>
 {% endblock %}
