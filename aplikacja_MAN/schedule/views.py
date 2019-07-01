@@ -62,16 +62,26 @@ def upload_schedule(request):
         'form': form,
     })
 
+
 def schedule_list(request):
     vacations_list_all = VacationsList.objects.filter(owner=request.user)
     if request.method == 'POST':
         if len(request.POST) == 3:
-            return redirect('schedule:schedules_compare')
+            all_arguments = list(request.POST)
+            first_list = all_arguments[1]
+            second_list = all_arguments[2]
+            return redirect('schedule:schedules_compare', first_list=first_list, second_list=second_list)
         else:
             return render(request, 'schedule_list.html', {
                 'all_lists': vacations_list_all,
                 'message': 'Wybierz dokładnie dwie listy'})
     return render(request, 'schedule_list.html', {'all_lists': vacations_list_all})
 
-def schedules_compare(request):
-    return render(request, 'compare_schedules.html')
+
+def schedules_compare(request, first_list, second_list):
+    first_list = VacationsList.objects.get(owner=request.user, name=first_list)
+    second_list = VacationsList.objects.get(owner=request.user, name=second_list)
+    return render(request, 'compare_schedules.html', {
+        'first_list': first_list,
+        'second_list': second_list,
+    })
