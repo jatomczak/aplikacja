@@ -64,5 +64,8 @@ def upload_schedule(request):
     })
 
 def schedule_list(request):
-    vacations_list_all = VacationsList.objects.filter(owner=request.user)
+    if request.method == 'POST':
+        pass
+    else:
+        vacations_list_all = VacationsList.objects.filter(owner=request.user)
     return render(request, 'schedule_list.html', {'all_lists': vacations_list_all})

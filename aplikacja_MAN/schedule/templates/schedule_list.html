@@ -8,13 +8,18 @@
     <th> Data od </th>
     <th> Data do </th>
     <th> Nazwa pliku </th>
-    {% for list in all_lists%}
-    <tr>
-        <td>{{list.name}}</td>
-        <td>{{list.date_from}}</td>
-        <td>{{list.date_to}}</td>
-        <td>{{list.file}}</td>
-    </tr>
-    {%endfor%}
+
+    <form method="post">
+        {% for list in all_lists%}
+            <tr>
+                <td>{{list.name}}</td>
+                <td>{{list.date_from}}</td>
+                <td>{{list.date_to}}</td>
+                <td>{{list.file}}</td>
+                <td>{% csrf_token %}<input type="checkbox" value="{{list.name}}"> </td>
+            </tr>
+        {%endfor%}
+        <button type="submit">Porównaj</button>
+    </form>
 </table>
 {%endblock%}
