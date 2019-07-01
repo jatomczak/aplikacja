@@ -14,7 +14,6 @@ def create_date_range_list(date_from, num_days):
     return date_list
 
 
-
 @login_required
 def home_view(request):
     form = SelectTimeRangeForm()
@@ -64,8 +63,15 @@ def upload_schedule(request):
     })
 
 def schedule_list(request):
+    vacations_list_all = VacationsList.objects.filter(owner=request.user)
     if request.method == 'POST':
-        pass
-    else:
-        vacations_list_all = VacationsList.objects.filter(owner=request.user)
+        if len(request.POST) == 3:
+            return redirect('schedule:schedules_compare')
+        else:
+            return render(request, 'schedule_list.html', {
+                'all_lists': vacations_list_all,
+                'message': 'Wybierz dokładnie dwie listy'})
     return render(request, 'schedule_list.html', {'all_lists': vacations_list_all})
+
+def schedules_compare(request):
+    return render(request, 'compare_schedules.html')

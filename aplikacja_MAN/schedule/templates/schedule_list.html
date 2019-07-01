@@ -2,7 +2,7 @@
 
 {%block content%}
 
-<p>schedule list</p>
+<p>{{message}}</p>
 <table>
     <th> Nazwa </th>
     <th> Data od </th>
@@ -10,13 +10,14 @@
     <th> Nazwa pliku </th>
 
     <form method="post">
+        {% csrf_token %}
         {% for list in all_lists%}
             <tr>
                 <td>{{list.name}}</td>
                 <td>{{list.date_from}}</td>
                 <td>{{list.date_to}}</td>
                 <td>{{list.file}}</td>
-                <td>{% csrf_token %}<input type="checkbox" value="{{list.name}}"> </td>
+                <td><input type="checkbox" name="{{list.name}}" value="{{list.name}}"> </td>
             </tr>
         {%endfor%}
         <button type="submit">Porównaj</button>
