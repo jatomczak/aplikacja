@@ -25,6 +25,9 @@ class VacationsList(VacationTimeRangeModel):
     class Meta:
         unique_together = ('owner', 'name')
 
+    def get_full_name(self):
+        return self.name
+
 
 class VacationDetails(models.Model):
     vacation_date = models.DateField(default=timezone.now())

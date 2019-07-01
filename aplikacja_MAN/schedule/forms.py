@@ -43,3 +43,18 @@ class UploadFileForm(forms.ModelForm):
     class Meta:
         model = VacationsList
         fields = ('name', 'date_from', 'date_to', 'file')
+
+
+class UserModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.get_full_name()
+
+
+class CompareVacationsListForm(forms.Form):
+    first_list = UserModelChoiceField(queryset=None)
+    second_list = UserModelChoiceField(queryset=None)
+
+    def __init__(self, owner, *args, **kwargs):
+        super(CompareVacationsListForm, self).__init__(*args, **kwargs)
+        self.fields['first_list'].queryset = VacationsList.objects.filter(owner=owner)
+        self.fields['second_list'].queryset = VacationsList.objects.filter(owner=owner)

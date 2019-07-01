@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .forms import SelectTimeRangeForm, UploadFileForm
+from .forms import SelectTimeRangeForm, UploadFileForm, CompareVacationsListForm
 from .models import VacationsList
 from . import scripts
 from datetime import datetime, timedelta
@@ -64,23 +64,27 @@ def upload_schedule(request):
 
 
 def schedule_list(request):
+    form = CompareVacationsListForm(owner=request.user)
     vacations_list_all = VacationsList.objects.filter(owner=request.user)
     if request.method == 'POST':
         if len(request.POST) == 3:
             all_arguments = list(request.POST)
             first_list = all_arguments[1]
             second_list = all_arguments[2]
-            return redirect('schedule:schedules_compare', first_list=first_list, second_list=second_list)
+            return redirect('schedule:compare_schedules', first_list=first_list, second_list=second_list)
         else:
             return render(request, 'schedule_list.html', {
                 'all_lists': vacations_list_all,
                 'message': 'Wybierz dokładnie dwie listy'})
-    return render(request, 'schedule_list.html', {'all_lists': vacations_list_all})
+    return render(request, 'schedule_list.html', {
+        'form': form,
+        'all_lists': vacations_list_all
+    })
 
 
-def schedules_compare(request, first_list, second_list):
-    first_list = VacationsList.objects.get(owner=request.user, name=first_list)
-    second_list = VacationsList.objects.get(owner=request.user, name=second_list)
+def schedules_compare(request):
+    first_list = request.POST['first_list']
+    second_list = request.POST['second_list']
     return render(request, 'compare_schedules.html', {
         'first_list': first_list,
         'second_list': second_list,

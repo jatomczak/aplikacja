@@ -7,5 +7,5 @@ urlpatterns = [
     path('', views.home_view, name='home'),
     path('upload', views.upload_schedule, name='upload_schedule'),
     path('list', views.schedule_list, name='schedule_list'),
-    path('compare/<first_list>/<second_list>', views.schedules_compare, name='schedules_compare')
+    path('compare', views.schedules_compare, name='compare_schedules')
 ]
