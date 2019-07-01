@@ -51,7 +51,6 @@ def upload_file(request):
 
 
 def upload_schedule(request):
-    date_format = '%d.%m.%Y'
 
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -60,16 +59,21 @@ def upload_schedule(request):
             vacations_list.owner = request.user
             vacations_list.save()
 
+            # date_format = '%d.%m.%Y'
+
             with open(vacations_list.file.path) as csv_file:
                 csv_reader = csv.reader(csv_file, delimiter=';')
                 for vacation_date, hours, user_name, unique_id in csv_reader:
-                    vacation = VacationDetails()
-                    vacation.vacation_date = datetime.strptime(vacation_date, date_format)
-                    vacation.user_name = user_name
-                    vacation.hours = hours
-                    vacation.unique_id = unique_id
-                    vacation.list = vacations_list
-                    vacation.save()
+                    vacation = VacationDetails.create_vacation_detalis(vacation_date, hours, user_name,
+                                                                       unique_id, vacations_list)
+
+                    # vacation = VacationDetails()
+                    # vacation.vacation_date = datetime.strptime(vacation_date, date_format)
+                    # vacation.user_name = user_name
+                    # vacation.hours = hours
+                    # vacation.unique_id = unique_id
+                    # vacation.list = vacations_list
+                    # vacation.save()
             return redirect('schedule:schedule_list')
     else:
         form = UploadFileForm()
