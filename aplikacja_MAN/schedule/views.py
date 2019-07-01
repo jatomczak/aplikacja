@@ -56,7 +56,7 @@ def upload_schedule(request):
             post = form.save(commit=False)
             post.owner = request.user
             post.save()
-            return redirect('index')
+            return redirect('schedule:schedule_list')
     else:
         form = UploadFileForm()
     return render(request, 'upload_schedule.html',{
