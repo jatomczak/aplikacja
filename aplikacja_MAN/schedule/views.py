@@ -64,4 +64,5 @@ def upload_schedule(request):
     })
 
 def schedule_list(request):
-    return render(request, 'schedule_list.html')
+    vacations_list_all = VacationsList.objects.filter(owner=request.user)
+    return render(request, 'schedule_list.html', {'all_lists': vacations_list_all})
