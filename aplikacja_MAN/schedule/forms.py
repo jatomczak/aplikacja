@@ -58,3 +58,10 @@ class CompareVacationsListForm(forms.Form):
         super(CompareVacationsListForm, self).__init__(*args, **kwargs)
         self.fields['first_list'].queryset = VacationsList.objects.filter(owner=owner)
         self.fields['second_list'].queryset = VacationsList.objects.filter(owner=owner)
+
+    def clean_second_list(self):
+        first_list = self.cleaned_data.get('first_list')
+        second_list = self.cleaned_data.get('second_list')
+        if first_list == second_list:
+            raise forms.ValidationError('Nie można porownac tych samych list')
+        return second_list
