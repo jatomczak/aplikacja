@@ -503,7 +503,7 @@ Main components
 
 .harm-window{
 max-width: 600px; 
-max-height: 300px;
+
 background-color: #3a393f;
 color: white;
 border:3px ridge #d00037; 
@@ -553,3 +553,4 @@ margin-top: 15px;
 
 .harm-table tr:hover {background-color: #888792 !important;}
 .harm-table tr:nth-child(even){background-color: #56555e;}
+
