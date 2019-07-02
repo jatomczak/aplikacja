@@ -40,6 +40,13 @@ class SelectTimeRangeForm(forms.ModelForm):
 
 class UploadFileForm(forms.ModelForm):
 
+    def create_upload_file_form(self, user):
+        if self.is_valid():
+            vacations_list = self.save(commit=False)
+            vacations_list.owner = user
+            vacations_list.save()
+            return vacations_list
+
     class Meta:
         model = VacationsList
         fields = ('name', 'date_from', 'date_to', 'file')
