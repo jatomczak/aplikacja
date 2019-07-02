@@ -29,6 +29,28 @@ class VacationsList(VacationTimeRangeModel):
     def get_full_name(self):
         return self.name
 
+    def get_vacation_details(self):
+        return VacationDetails.objects.filter(list=self)
+
+    def compare_two_list(self, second_vacations_list):
+        data = dict()
+        data['PODOBIENSTWA'] = []
+        data['BRAKUJE NA 2 LISCIE'] = []
+        data['BRAKUJE NA 1 LISCIE'] = []
+        vacations_from_first_list = self.get_vacation_details()
+        vacations_from_second_list = second_vacations_list.get_vacation_details()
+
+        for vacation in vacations_from_first_list:
+            if vacations_from_second_list.filter(unique_id=vacation.unique_id).exists():
+                data['PODOBIENSTWA'].append(vacation)
+            else:
+                data['BRAKUJE NA 2 LISCIE'].append(vacation)
+
+        for vacation in vacations_from_second_list:
+            if vacations_from_first_list.filter(unique_id=vacation.unique_id).exists():
+                data['BRAKUJE NA 1 LISCIE'].append(vacation)
+        return data
+
 
 class VacationDetails(models.Model):
     date_format = '%d.%m.%Y'
