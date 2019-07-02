@@ -81,11 +81,29 @@ def schedules_compare(request):
         if form.is_valid():
             first_list_id = request.POST['first_list']
             second_list_id = request.POST['second_list']
+
             first_vacations_list = VacationsList.objects.get(id=first_list_id)
             second_vacations_list = VacationsList.objects.get(id=second_list_id)
-            all_vacations = VacationDetails.objects.filter(list=first_vacations_list)
+
+            vacations_from_first_list = VacationDetails.objects.filter(list=first_vacations_list)
+            vacations_from_second_list = VacationDetails.objects.filter(list=second_vacations_list)
+
+            similar = []
+            differences = []
+            new = []
+            for vacation in vacations_from_first_list:
+                if vacations_from_second_list.filter(unique_id=vacation.unique_id).exists():
+                    similar.append(vacation)
+                else:
+                    differences.append(vacation)
+            for vacation in vacations_from_second_list:
+                if vacations_from_first_list.filter(unique_id=vacation.unique_id).exists():
+                    new.append(vacation)
+
             return render(request, 'compare_schedules.html', {
-                'all_vacations': all_vacations,
+                'similar': similar,
+                'differences': differences,
+                'new': new,
             })
 
     return redirect('schedule:schedule_list')

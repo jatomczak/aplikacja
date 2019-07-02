@@ -2,10 +2,33 @@
 
 {%block content%}
 <table>
-    {%for vacation in all_vacations%}
     <tr>
+        <th>PODOBIENSTWA</th>
+    </tr>
+    {%for vacation in similar%}
+    <tr>
+        <td>{{vacation.user_name}}</td>
         <td>{{vacation.vacation_date}}</td>
-        <td>{{vacation.hours}}</td>
+    </tr>
+    {%endfor%}
+
+    <tr>
+        <th>RÓZNICE</th>
+    </tr>
+    {%for vacation in differences%}
+    <tr>
+        <td>{{vacation.user_name}}</td>
+        <td>{{vacation.vacation_date}}</td>
+    </tr>
+    {%endfor%}
+
+    <tr>
+        <th>NOWE</th>
+    </tr>
+    {%for vacation in new%}
+    <tr>
+        <td>{{vacation.user_name}}</td>
+        <td>{{vacation.vacation_date}}</td>
     </tr>
     {%endfor%}
 </table>
