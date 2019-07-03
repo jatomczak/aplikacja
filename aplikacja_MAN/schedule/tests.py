@@ -43,9 +43,9 @@ class TestScheduleViews(TestCase):
         request = HttpRequest()
         request.method = 'POST'
         request.POST['date_from'] = '2019-01-01'
-        request.POST['date_to'] = '2019-02-02'
+        request.POST['date_to'] = '2019-01-30'
         request.user = User.objects.get(id=1)
-        mock = MagicMock(return_value = {'Tomczak': {'2019-01-01':8, '2019-02-01':8,}})
+        mock = MagicMock(return_value = {'Tomczak': {'2019-01-01':8, '2019-01-28':8,}})
         scripts.get_data_from_harm_for_user = mock
         response = views.home_view(request)
         self.assertIn(b'Tomczak', response.content)
