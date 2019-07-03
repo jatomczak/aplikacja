@@ -59,6 +59,7 @@ class VacationDetailsTest(TestCase):
 
     def create_vacation_list(self):
         vacation_list = VacationsList()
+        vacation_list.name = 'unique_1'
         vacation_list.owner = User.objects.get(id=1)
         vacation_list.save()
 
@@ -109,6 +110,7 @@ class VacationDetailsTest(TestCase):
 
     def test_the_same_element_on_two_different_list(self):
         vacation_list = VacationsList()
+        vacation_list.name = 'unique_2'
         vacation_list.owner = User.objects.get(id=1)
         vacation_list.save()
 
