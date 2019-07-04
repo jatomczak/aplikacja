@@ -33,7 +33,7 @@ class DbConfiguration:
         self.config = configparser.ConfigParser()
         self.config_section = config_section
         try:
-            self.config.read('properties.cfg')
+            self.config.read(r'C:\pulpit\aplikacja\aplikacja_MAN\IBIS_socket_finder\properties.cfg')
 
         except configparser.Error:
             print('Nie mozna odnaelzc pliku')

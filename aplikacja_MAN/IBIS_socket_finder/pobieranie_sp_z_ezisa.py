@@ -12,13 +12,11 @@ def pobierz_plany(SNRS : list, user="h0309", password="Honda890"):
         urls.append('http://ezis.mn-man.biz/cgi-bin/ezis/suche_znr.pl?Znr='+snr+ \
                     '&Anr=&ListName=Liste&Pet=&Dat=&DatSta=Import&Opt=U&Aktion=SZnr&Lang=en ')
 
-
     print('zdobywanie ciasteczek')
     r = requests.get(urls[0], auth=(user, password))
     layer1cookies = r.cookies
 
     print('wysylanie zapytania na serwer o plany ')
-
     requests_for_plans = (grequests.get(u, cookies=layer1cookies, auth=(user, password)) for u in urls)
     response_for_plans = grequests.map(requests_for_plans)
     return response_for_plans

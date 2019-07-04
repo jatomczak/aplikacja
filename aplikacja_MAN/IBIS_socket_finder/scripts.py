@@ -1,13 +1,9 @@
-import pobieranie_sp_z_ezisa
+from . import pobieranie_sp_z_ezisa
 import os
 import zipfile
 import mmap
-import requests
-import re
 import shutil
-from sql_emcos import UseOracleDb
-
-import sys
+from . import sql_emcos
 
 
 def main(autobus, user='h0309', password='Honda890', root='C:\\Users\\h0309\\PycharmProjects\socket_recognition_v3'
@@ -43,7 +39,7 @@ def main(autobus, user='h0309', password='Honda890', root='C:\\Users\\h0309\\Pyc
         return all_sachnumers
 
     def pobranie_sql(autobus):
-        with UseOracleDb() as cursor:
+        with sql_emcos.UseOracleDb() as cursor:
             _SQL = "select SNR from kass032_view where produktnr like '%" + autobus + "%' AND (bend_snr like '%SCHALTPLAN%' OR bend_snr like '%BELEGUNGSPLAN  IBIS%' OR bend_snr like '%INSTRUMENTEN%')"
             cursor.execute(_SQL)
             result = cursor.fetchall()
@@ -141,14 +137,15 @@ def main(autobus, user='h0309', password='Honda890', root='C:\\Users\\h0309\\Pyc
             try:
                 os.makedirs(root + autobus + '\\'+nazwa_folderu+'\\')
             except:
-                print('path ' + root + autobus + '\\'+nazwa_folderu+'\\' + ' already exists')
+                p = 1
+                # print('path ' + root + autobus + '\\'+nazwa_folderu+'\\' + ' already exists')
         pass
 
     # ---------------------------------------------koniec funkcji-------------------------------------------------------
     try:
         usuniecie_zbednych_plikow(root + autobus)
     except:
-        print('tworzę nowy folder')
+        p=1
 
     tworzenie_folderow(['plany_w_plikach_eb-cable', 'plany_tiff', 'belegungsplany', 'instrumententafels'])
 
@@ -177,13 +174,6 @@ def main(autobus, user='h0309', password='Honda890', root='C:\\Users\\h0309\\Pyc
     pobieranie_tiff(instrumententafels, 'instrumententafels')
 
     usuniecie_zbednych_plikow(glowna_sciezka)
+    shutil.move(root+autobus+'\\', 'K:\Kompilacja\IBIS socket finder')
+
     pass
-
-
-
-
-if __name__ == '__main__':
-    autobus = input("wpisz autobus: ")
-    autobus = autobus.replace('-', '')
-    autobus = autobus.upper()
-    main(autobus)
