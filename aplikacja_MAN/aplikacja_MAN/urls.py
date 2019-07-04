@@ -26,6 +26,6 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(authentication_form=CustomAuthenticationForm)),
     path('accounts/', include('django.contrib.auth.urls')),
     path('planowanie/', include('planowanie.urls')),
-    #path('harmonogram/', include('schedule.urls')),
+    path('harmonogram/', include('schedule.urls')),
     path('ibis/', include('IBIS_socket_finder.urls')),
 ]
