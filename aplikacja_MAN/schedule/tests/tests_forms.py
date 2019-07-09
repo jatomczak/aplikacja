@@ -1,8 +1,10 @@
 from django.test import TestCase
 from django.utils import timezone
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from schedule import forms
-
+from clients.models import User
+from unittest import skip
 
 class SelectTimeRangeFormTest(TestCase):
     def test_incorrect_date_range(self):
@@ -15,6 +17,7 @@ class SelectTimeRangeFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('Maksymalny przedział nie może być dłuższy niż 31 dni.', form.errors['date_to'])
 
+    @skip
     def test_incorrect_date_format(self):
         form = forms.SelectTimeRangeForm(data={'date_from': '10-10-2019', 'date_to': '10-10-2019'})
         self.assertFalse(form.is_valid())
@@ -28,8 +31,24 @@ class SelectTimeRangeFormTest(TestCase):
 
     def test_defaults_values(self):
         form = forms.SelectTimeRangeForm()
-        print(form)
         date_from = form['date_from'].value()
         date_to = form['date_to'].value()
         self.assertEqual(date_from.date(), timezone.now().date())
         self.assertEqual(date_to.date(), timezone.now().date())
+
+
+class UploadFileFormTest(TestCase):
+    def setUp(self):
+        user = User(email='test@test.pl')
+        user.set_password('test')
+        user.save()
+
+    def test_correct_fill_form(self):
+        with open('schedule/tests/files_to_tests/correct_file.csv') as file:
+            _file = SimpleUploadedFile('file.csv', b'content', content_type='text')
+
+        data = {'name':'fdasdf', 'date_from':'2019-01-01', 'date_to':'2019-01-01',}
+        form = forms.UploadFileForm(data=data, files={'file': _file})
+        form.create_upload_file_form(user=User.objects.get(id=1))
+        self.assertTrue(form.is_valid())
+        self.assertEqual({}, form.errors)
