@@ -60,8 +60,6 @@ def upload_schedule(request):
                 for vacation_date, hours, user_name, unique_id in csv_reader:
                     VacationDetails.create_vacation_detalis(vacation_date, hours, user_name, unique_id, vacations_list)
                 return redirect('schedule:schedule_list')
-        else:
-            form = UploadFileForm(request.POST, request.FILES)
     else:
         form = UploadFileForm()
     return render(request, 'upload_schedule.html', {
