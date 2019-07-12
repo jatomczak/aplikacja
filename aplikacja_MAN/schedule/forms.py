@@ -39,8 +39,10 @@ class SelectTimeRangeForm(forms.ModelForm):
 
 
 class UploadFileForm(forms.ModelForm):
+    user = None
 
     def create_upload_file_form(self, user):
+        self.user = user
         if self.is_valid():
             vacations_list = self.save(commit=False)
             vacations_list.owner = user
@@ -50,6 +52,13 @@ class UploadFileForm(forms.ModelForm):
     class Meta:
         model = VacationsList
         fields = ('name', 'date_from', 'date_to', 'file')
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        qs = VacationsList.objects.filter(name=name, owner=self.user)
+        if qs.exists():
+            raise forms.ValidationError('Lista o podanej nazwie już istnieje')
+        return name
 
 
 class UserModelChoiceField(forms.ModelChoiceField):

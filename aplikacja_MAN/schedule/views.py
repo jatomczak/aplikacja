@@ -54,11 +54,12 @@ def upload_schedule(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         vacations_list = form.create_upload_file_form(request.user)
-        with open(vacations_list.file.path) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=';')
-            for vacation_date, hours, user_name, unique_id in csv_reader:
-                VacationDetails.create_vacation_detalis(vacation_date, hours, user_name, unique_id, vacations_list)
-            return redirect('schedule:schedule_list')
+        if form.is_valid():
+            with open(vacations_list.file.path) as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=';')
+                for vacation_date, hours, user_name, unique_id in csv_reader:
+                    VacationDetails.create_vacation_detalis(vacation_date, hours, user_name, unique_id, vacations_list)
+                return redirect('schedule:schedule_list')
     else:
         form = UploadFileForm()
     return render(request, 'upload_schedule.html', {
