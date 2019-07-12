@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from .forms import SelectTimeRangeForm
+from .forms import SelectTimeRangeForm, UploadFileForm, CompareVacationsListForm
+from .models import VacationsList, VacationDetails
 from . import scripts
 from datetime import datetime, timedelta
+import csv
 
+from .scripts import handle_uploaded_file
 
 def create_date_range_list(date_from, num_days):
     date_list = []
@@ -33,3 +36,57 @@ def home_view(request):
             return render(request, 'home.html', {'form': form})
     else:
         return render(request, 'home.html', {'form': form})
+
+
+@login_required
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+            return HttpResponseRedirect('/')
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload.html', {'form': form})
+
+
+def upload_schedule(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        vacations_list = form.create_upload_file_form(request.user)
+        if form.is_valid():
+            with open(vacations_list.file.path) as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=';')
+                for vacation_date, hours, user_name, unique_id in csv_reader:
+                    VacationDetails.create_vacation_detalis(vacation_date, hours, user_name, unique_id, vacations_list)
+                return redirect('schedule:schedule_list')
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload_schedule.html', {
+        'form': form,
+    })
+
+
+def schedule_list(request):
+    form = CompareVacationsListForm(owner=request.user)
+    vacations_list_all = VacationsList.objects.filter(owner=request.user)
+    return render(request, 'schedule_list.html', {
+        'form': form,
+        'all_lists': vacations_list_all
+    })
+
+
+def schedules_compare(request):
+    if request.method == 'POST':
+        form = CompareVacationsListForm(owner=request.user, data=request.POST)
+        if form.is_valid():
+            first_list_id = request.POST['first_list']
+            second_list_id = request.POST['second_list']
+            first_vacations_list = VacationsList.objects.get(id=first_list_id)
+            second_vacations_list = VacationsList.objects.get(id=second_list_id)
+
+            data = first_vacations_list.compare_two_list(second_vacations_list)
+            return render(request, 'compare_schedules.html', {
+                'data': data,
+            })
+    return redirect('schedule:schedule_list')
