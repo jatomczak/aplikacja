@@ -45,10 +45,27 @@ class UploadFileFormTest(TestCase):
 
     def test_correct_fill_form(self):
         with open('schedule/tests/files_to_tests/correct_file.csv') as file:
-            _file = SimpleUploadedFile('file.csv', b'content', content_type='text')
-
-        data = {'name':'fdasdf', 'date_from':'2019-01-01', 'date_to':'2019-01-01',}
-        form = forms.UploadFileForm(data=data, files={'file': _file})
+            file_object = SimpleUploadedFile('file.csv', b'content', content_type='text')
+        data = {'name':'first_file', 'date_from':'2019-01-01', 'date_to':'2019-01-01',}
+        form = forms.UploadFileForm(data=data, files={'file': file_object})
         form.create_upload_file_form(user=User.objects.get(id=1))
         self.assertTrue(form.is_valid())
         self.assertEqual({}, form.errors)
+
+    def test_none_object_as_file(self):
+        with open('schedule/tests/files_to_tests/correct_file.csv') as file:
+            file_object = None
+        data = {'name':'first_file', 'date_from':'2019-01-01', 'date_to':'2019-01-01',}
+        form = forms.UploadFileForm(data=data, files={'file': file_object})
+        form.create_upload_file_form(user=User.objects.get(id=1))
+        self.assertFalse(form.is_valid())
+        self.assertIn('This field is required.', form.errors['file'])
+
+    def test_non_csv_file(self):
+        with open('schedule/tests/files_to_tests/non_csv_file.txt') as file:
+            file_object = None
+        data = {'name':'first_file', 'date_from':'2019-01-01', 'date_to':'2019-01-01',}
+        form = forms.UploadFileForm(data=data, files={'file': file_object})
+        form.create_upload_file_form(user=User.objects.get(id=1))
+        self.assertFalse(form.is_valid())
+        self.assertIn('This field is required.', form.errors['file'])
