@@ -128,6 +128,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+UPLOAD_FILE_PATH = 'uploads/'
+
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),

@@ -9,6 +9,7 @@ uploads/
 *.so
 
 .idea
+aplikacja_MAN/uploads
 
 # Distribution / packaging
 .Python

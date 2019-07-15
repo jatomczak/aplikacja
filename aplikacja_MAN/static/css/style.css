@@ -493,3 +493,64 @@ Main components
     margin-top: 25px;
     margin-bottom: 50px;
 }
+.harm-body{
+  position: relative;
+  height: 100%;
+  background: url('../images/harmonogram.jpg') no-repeat center center;
+  background-color: #3a393f;
+  background-size: cover; 
+}
+
+.harm-window{
+max-width: 600px; 
+
+background-color: #3a393f;
+color: white;
+border:3px ridge #d00037; 
+margin-top: 15px;    
+}
+
+.harm-window h1{
+    text-align: center;
+  font-size: 50px !important;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0px 0px 10px #D00039;    
+  margin-top: 10px;
+  margin-bottom: 20px;  
+}
+
+.harm-table{
+ margin-top: 30px;
+
+ cursor: default; 
+ border-collapse: collapse;
+ border:3px ridge #d00037;
+ color: white;
+ background-color: #3a393f;
+ width: 100%;     
+}
+.harm-table th {
+  text-align: center;
+  color: black;
+  text-transform: uppercase;
+  background: rgb(242,245,246); /* Old browsers */
+  background: -moz-linear-gradient(top, rgba(242,245,246,1) 0%, rgba(193,199,201,1) 37%, rgba(200,215,220,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, rgba(242,245,246,1) 0%,rgba(193,199,201,1) 37%,rgba(200,215,220,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, rgba(242,245,246,1) 0%,rgba(193,199,201,1) 37%,rgba(200,215,220,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f5f6', endColorstr='#c8d7dc',GradientType=0 );/* IE6-9 */
+  border: 1px solid black;
+  height: 30px;    
+   
+}
+.harm-table td {
+    font-size: 13px;
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid black;
+    height: 23px;
+}
+
+.harm-table tr:hover {background-color: #888792 !important;}
+.harm-table tr:nth-child(even){background-color: #56555e;}
+

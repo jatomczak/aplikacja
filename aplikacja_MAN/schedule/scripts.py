@@ -3,7 +3,10 @@ from datetime import date
 import holidays
 from . import users_list
 from datetime import datetime, timedelta
+import csv
+from .models import VacationDetails, VacationsList
 
+from aplikacja_MAN.settings import UPLOAD_FILE_PATH
 
 DATE_FORMAT = '%Y-%m-%d'
 
@@ -98,3 +101,28 @@ def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), dat
 
 
     return list_of_vacations
+
+
+def handle_uploaded_file(f):
+    with open(UPLOAD_FILE_PATH + 'test.csv', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+class CsvToDb:
+    file_path = 'test_vacations.csv'
+    date_format = '%d.%m.%Y'
+
+    def import_task(self, owner):
+        with open(self.file_path) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=';')
+            for vacation_date,  hours, user_name, unique_id in csv_reader:
+                vacation = VacationDetails()
+                vacation.vacation_date = datetime.strptime(vacation_date, self.date_format)
+                vacation.user_name = user_name
+                vacation.hours = hours
+                vacation.unique_id = unique_id
+                vacation.list = vacation_list
+                vacation.save()
+
+    def check_if_task_exist(self):
+        pass

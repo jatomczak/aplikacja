@@ -20,12 +20,11 @@ from clients.forms import CustomAuthenticationForm
 from .views import index_view
 
 urlpatterns = [
-    path('', index_view),
+    path('', index_view, name='index'),
     path('admin/', admin.site.urls),
     path('clients/', include('clients.urls')),
     path('accounts/login/', auth_views.LoginView.as_view(authentication_form=CustomAuthenticationForm)),
     path('accounts/', include('django.contrib.auth.urls')),
     path('planowanie/', include('planowanie.urls')),
-    path('harmonogram/', include('schedule.urls')),
     path('ibis/', include('IBIS_socket_finder.urls')),
 ]
