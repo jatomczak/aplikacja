@@ -1,6 +1,7 @@
 from django import forms
 from .models import VacationTimeRangeModel, VacationsList
 from datetime import datetime, timedelta
+import csv
 
 
 class SelectTimeRangeForm(forms.ModelForm):
@@ -47,6 +48,7 @@ class UploadFileForm(forms.ModelForm):
             vacations_list = self.save(commit=False)
             vacations_list.owner = user
             vacations_list.save()
+            # vacations_list.check_file_has_correct_content()
             return vacations_list
 
     class Meta:
@@ -59,6 +61,24 @@ class UploadFileForm(forms.ModelForm):
         if qs.exists():
             raise forms.ValidationError('Lista o podanej nazwie już istnieje')
         return name
+
+    def clean_file(self):
+        unique_list = []
+        file = self.cleaned_data.get('file')
+        for num_line, line in enumerate(file):
+            decode_line = line.decode('utf-8')
+            split_line = decode_line.split(';')
+            if split_line.__len__() != 4:
+                raise forms.ValidationError('PLIK NIE POSIADA ODPOWIEDNIJ LICZBY KOLUMN - LINIA %d' % (num_line + 1))
+            unique_element = split_line[3]
+            unique_list.append(unique_element)
+
+            if len(unique_list) != len(set(unique_list)):
+                raise forms.ValidationError('PLIK ZAWIERA DUPLIKATY W KOLUMNIE CZWARTEJ - LINIA %d' % (num_line + 1))
+        return file
+
+
+
 
 
 class UserModelChoiceField(forms.ModelChoiceField):
