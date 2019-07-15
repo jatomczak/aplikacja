@@ -63,13 +63,18 @@ class UploadFileForm(forms.ModelForm):
         return name
 
     def clean_file(self):
+        unique_list = []
         file = self.cleaned_data.get('file')
         for num_line, line in enumerate(file):
             decode_line = line.decode('utf-8')
-            try:
-                vacation_date, hours, user_name, unique_id = decode_line.split(';')
-            except ValueError:
-                raise forms.ValidationError('PLIK NIE POSIADA ODPOWIEDNIJ LICZBY KOLUMN - LINIA %d'% (num_line + 1))
+            split_line = decode_line.split(';')
+            if split_line.__len__() != 4:
+                raise forms.ValidationError('PLIK NIE POSIADA ODPOWIEDNIJ LICZBY KOLUMN - LINIA %d' % (num_line + 1))
+            unique_element = split_line[3]
+            unique_list.append(unique_element)
+
+            if len(unique_list) != len(set(unique_list)):
+                raise forms.ValidationError('PLIK ZAWIERA DUPLIKATY W KOLUMNIE CZWARTEJ - LINIA %d' % (num_line + 1))
         return file
 
 
