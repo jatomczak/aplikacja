@@ -85,3 +85,52 @@ class UploadFileFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('txt', form.errors['file'][0])
         self.assertIn('Niedozwolony format pliku', form.errors['file'][0])
+
+    def test_file_content_two_columns(self):
+        data_dict = {
+            'filename': 'file.csv',
+            'content': b'11;12\n 21;22',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
+        self.assertFalse(form.is_valid())
+        self.assertIn('PLIK NIE POSIADA ODPOWIEDNIJ LICZBY KOLUMN', form.errors['file'][0])
+
+    def test_file_content_five_columns(self):
+        data_dict = {
+            'filename': 'file.csv',
+            'content': b'11;12;13;14;15\n 21;22;23;24;25',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
+        self.assertFalse(form.is_valid())
+        self.assertIn('PLIK NIE POSIADA ODPOWIEDNIJ LICZBY KOLUMN', form.errors['file'][0])
+
+    def test_file_content_error_in_line_3(self):
+        data_dict = {
+            'filename': 'file.csv',
+            'content': b'11;12;13;14\n 21;22;23;24\n31;32;33;34;35',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
+        self.assertFalse(form.is_valid())
+        self.assertIn('LINIA 3', form.errors['file'][0])
+
+    def test_conteins_duplicate_value(self):
+        data_dict = {
+            'filename': 'file.csv',
+            'content': b'11;12;13;duplicate\n 21;22;23;duplicate\n',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
+        self.assertFalse(form.is_valid())
+        self.assertIn('PLIK ZAWIERA DUPLIKATY', form.errors['file'][0])
+        self.assertIn('LINIA 2', form.errors['file'][0])
