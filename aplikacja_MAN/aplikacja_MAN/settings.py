@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'clients',
     'planowanie',
     'schedule',
-    'IBIS_socket_finder',
 ]
 
 AUTH_USER_MODEL = 'clients.User'
