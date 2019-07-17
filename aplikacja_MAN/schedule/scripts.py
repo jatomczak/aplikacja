@@ -88,7 +88,7 @@ def get_overtime_hours(user_file, date_from=date(2019, 1, 1), date_to=date(2019,
                             working_hour = float(line.split('$')[1].replace(',', '.'))-8
                             list_of_overtime[day.isoformat()] = working_hour
         except:
-            list_of_overtime['ERROR'] ='BLAD W LINI %s' % num_of_line
+            list_of_overtime['ERROR'] = 'BLAD W LINI %s' % num_of_line
     return list_of_overtime
 
 
@@ -109,9 +109,10 @@ def remove_new_line_char(tekst):
 def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), date_to=date(2019, 12, 31), name_of_holiday='urlopy'):
     list_of_vacations = {}
     for user_id, surname in list_with_user_id_and_initials.get(department, {}).items():
+        list_of_vacations[surname] = {}
         try:
             user_file = open_harm_file_for_user(user_id)
-            list_of_vacations[surname] = get_user_holiday(
+            list_of_vacations[surname]['vacations'] = get_user_holiday(
                 user_file,
                 name_of_holiday=name_of_holiday,
                 date_from=date_from,

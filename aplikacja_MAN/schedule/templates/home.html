@@ -47,7 +47,7 @@
     <tr id='{{name}}'>
 		<td>{{name}}</td>
 		{%for date in period_length %}
-			<td {% if date in list %} bgcolor="Red"{%endif%} >8</td>
+			<td {% if date in list.vacations %} bgcolor="Red"{%endif%} >8</td>
 		{%endfor%}
     </tr>
     {% endfor %}
