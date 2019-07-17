@@ -43,29 +43,94 @@ class UploadFileFormTest(TestCase):
         user.set_password('test')
         user.save()
 
-    def test_correct_fill_form(self):
-        with open('schedule/tests/files_to_tests/correct_file.csv') as file:
-            file_object = SimpleUploadedFile('file.csv', b'content', content_type='text')
-        data = {'name':'first_file', 'date_from':'2019-01-01', 'date_to':'2019-01-01',}
-        form = forms.UploadFileForm(data=data, files={'file': file_object})
+    def create_upload_file_form(self, data_dict):
+        file_object = SimpleUploadedFile.from_dict(data_dict)
+        form = forms.UploadFileForm(data=data_dict, files={'file': file_object})
         form.create_upload_file_form(user=User.objects.get(id=1))
+        return form
+
+    def test_none_object_as_file(self):
+        data_dict = {
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        file_object = None
+        form = forms.UploadFileForm(data=data_dict, files={'file': file_object})
+        form.create_upload_file_form(user=User.objects.get(id=1))
+        self.assertFalse(form.is_valid())
+        self.assertIn('This field is required.', form.errors['file'])
+
+    def test_correct_fill_form(self):
+        data_dict = {
+            'filename': 'file.csv',
+            'content': b'11;12;13;14\n 21;22;23;24',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
         self.assertTrue(form.is_valid())
         self.assertEqual({}, form.errors)
 
-    def test_none_object_as_file(self):
-        with open('schedule/tests/files_to_tests/correct_file.csv') as file:
-            file_object = None
-        data = {'name':'first_file', 'date_from':'2019-01-01', 'date_to':'2019-01-01',}
-        form = forms.UploadFileForm(data=data, files={'file': file_object})
-        form.create_upload_file_form(user=User.objects.get(id=1))
-        self.assertFalse(form.is_valid())
-        self.assertIn('This field is required.', form.errors['file'])
-
     def test_non_csv_file(self):
-        with open('schedule/tests/files_to_tests/non_csv_file.txt') as file:
-            file_object = None
-        data = {'name':'first_file', 'date_from':'2019-01-01', 'date_to':'2019-01-01',}
-        form = forms.UploadFileForm(data=data, files={'file': file_object})
-        form.create_upload_file_form(user=User.objects.get(id=1))
+        data_dict = {
+            'filename': 'file.txt',
+            'content': b'11;12;13;14\n 21;22;23;24',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
         self.assertFalse(form.is_valid())
-        self.assertIn('This field is required.', form.errors['file'])
+        self.assertIn('txt', form.errors['file'][0])
+        self.assertIn('Niedozwolony format pliku', form.errors['file'][0])
+
+    def test_file_content_two_columns(self):
+        data_dict = {
+            'filename': 'file.csv',
+            'content': b'11;12\n 21;22',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
+        self.assertFalse(form.is_valid())
+        self.assertIn('PLIK NIE POSIADA ODPOWIEDNIJ LICZBY KOLUMN', form.errors['file'][0])
+
+    def test_file_content_five_columns(self):
+        data_dict = {
+            'filename': 'file.csv',
+            'content': b'11;12;13;14;15\n 21;22;23;24;25',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
+        self.assertFalse(form.is_valid())
+        self.assertIn('PLIK NIE POSIADA ODPOWIEDNIJ LICZBY KOLUMN', form.errors['file'][0])
+
+    def test_file_content_error_in_line_3(self):
+        data_dict = {
+            'filename': 'file.csv',
+            'content': b'11;12;13;14\n 21;22;23;24\n31;32;33;34;35',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
+        self.assertFalse(form.is_valid())
+        self.assertIn('LINIA 3', form.errors['file'][0])
+
+    def test_conteins_duplicate_value(self):
+        data_dict = {
+            'filename': 'file.csv',
+            'content': b'11;12;13;duplicate\n 21;22;23;duplicate\n',
+            'name': 'first_file',
+            'date_from': '2019-01-01',
+            'date_to': '2019-01-01',
+        }
+        form = self.create_upload_file_form(data_dict)
+        self.assertFalse(form.is_valid())
+        self.assertIn('PLIK ZAWIERA DUPLIKATY', form.errors['file'][0])
+        self.assertIn('LINIA 2', form.errors['file'][0])
