@@ -71,6 +71,31 @@ def get_user_holiday(user_file, name_of_holiday='urlopy', date_from=date(2019,1,
 
     return list_of_holiday
 
+def get_working_saturday(user_file, date_from = date(2019,1,1), date_to=date(2019,12,31)):
+    list_of_overtime = {}
+    for num_of_line, line in enumerate(user_file):
+        try:
+            day_of_year = count_day_of_year_based_on_numline(num_of_line)
+            if day_of_year >= 0:
+                day = convert_day_of_year_to_date(day_of_year)
+                if is_date_in_range(day, date_from, date_to):
+                    if ('3$' in line) or ('4$' in line):
+                        if not 'sum_of_hours' in list_of_overtime:
+                            list_of_overtime['sum_of_hours'] = 0
+                        if datetime.datetime.weekday(day) in [day_of_week['SAT'], day_of_week['SUN']]:
+                            working_hour = float(line.split('$')[1].replace(',', '.'))
+                            list_of_overtime[day.isoformat()]= working_hour
+                            list_of_overtime['sum_of_hours'] += working_hour
+                        else:
+                            working_hour = float(line.split('$')[1].replace(',', '.'))-8
+                            list_of_overtime[day.isoformat()] = working_hour
+                            list_of_overtime['sum_of_hours'] += working_hour
+        except:
+            flash('%s DANE TEGO PRACOWNIKA MOGA ZAWIERAC BLEDY, BLAD W LINI %s' % (user_file.name, num_of_line),
+                  'alert alert-danger')
+            list_of_overtime['ERROR'] ='BLAD W LINI %s' % num_of_line
+    return list_of_overtime
+
 def read_file_again(user_file):
     user_file.seek(0)
 
@@ -98,7 +123,6 @@ def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), dat
             )
         except FileNotFoundError:
             list_of_vacations[surname] = {'error':"Nie znaleziono pliku"}
-
 
     return list_of_vacations
 
