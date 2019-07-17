@@ -33,7 +33,8 @@ class RegisterFormTest(TestCase):
                 'name': 'jacek',
                 'surname': 'tomczak',
                 'password1': 'test1',
-                'password2': 'test1'}
+                'password2': 'test1',
+                'user_id': 't0000'}
         form = RegisterForm(data= data)
         self.assertTrue(form.is_valid(),form.errors)
 
