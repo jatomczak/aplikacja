@@ -21,7 +21,7 @@ def home_view(request):
     if request.method == 'POST':
         form = SelectTimeRangeForm(request.POST)
         if form.is_valid():
-            department_name = request.user.group.group_name
+            department_name = request.user.get_group_name()
             date_from = form.cleaned_data['date_from']
             date_to = form.cleaned_data['date_to']
             period_length = (date_to - date_from).days + 1

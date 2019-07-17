@@ -87,7 +87,7 @@ def remove_new_line_char(tekst):
 
 def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), date_to=date(2019, 12, 31), name_of_holiday='urlopy'):
     list_of_vacations = {}
-    for user_id, surname in list_with_user_id_and_initials[department].items():
+    for user_id, surname in list_with_user_id_and_initials.get(department, {}).items():
         try:
             user_file = open_harm_file_for_user(user_id)
             list_of_vacations[surname] = get_user_holiday(

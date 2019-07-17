@@ -58,6 +58,11 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    def get_group_name(self):
+        if self.group:
+            return self.group.group_name
+        return None
+
     def get_full_name(self):
         return self.email
 
