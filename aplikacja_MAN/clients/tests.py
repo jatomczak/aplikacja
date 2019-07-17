@@ -33,7 +33,8 @@ class RegisterFormTest(TestCase):
                 'name': 'jacek',
                 'surname': 'tomczak',
                 'password1': 'test1',
-                'password2': 'test1'}
+                'password2': 'test1',
+                'user_id': 't0000'}
         form = RegisterForm(data= data)
         self.assertTrue(form.is_valid(),form.errors)
 
@@ -104,6 +105,7 @@ class RegistrationViewTest(TestCase):
         request.POST['surname'] = 'admin'
         request.POST['password1'] = 'admin'
         request.POST['password2'] = 'admin'
+        request.POST['user_id'] = 't000'
         response = add_new_user(request)
         response.client = self.client
         self.assertRedirects(response, reverse('clients:login'), status_code=302, target_status_code=302)
