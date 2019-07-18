@@ -106,6 +106,10 @@ def remove_new_line_char(tekst):
     return tekst.replace('\n', '')
 
 
+def sort_dict(_dict):
+    return dict(sorted(_dict.items()))
+
+
 def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), date_to=date(2019, 12, 31), name_of_holiday='urlopy'):
     list_of_vacations = {}
     for user_id, surname in list_with_user_id_and_initials.get(department, {}).items():
@@ -125,6 +129,7 @@ def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), dat
         except FileNotFoundError:
             list_of_vacations[surname] = {'error':"Nie znaleziono pliku"}
 
+    list_of_vacations = sort_dict(list_of_vacations)
     return list_of_vacations
 
 

@@ -19,8 +19,8 @@
 <div class="fluid-container text-center">
 <div class="container harm-window  vivify  pullUp">
 
-<h1>HARMONOGRAM</h1>
-
+<h1>HARMONOGRAM </h1>
+{%if user.group%} <h3> {{user.group}}</h3> {% else %}<h6>Nie masz przypisanej grupy (np. IBIS) </h6>{%endif%}
 	<form method="post">
 		{% csrf_token %}
 		{% for item in form %}
