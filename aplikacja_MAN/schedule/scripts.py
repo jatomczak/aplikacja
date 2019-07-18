@@ -81,11 +81,11 @@ def get_overtime_hours(user_file, date_from=date(2019, 1, 1), date_to=date(2019,
                 day = convert_day_of_year_to_date(day_of_year)
                 if is_date_in_range(day, date_from, date_to):
                     if ('3$' in line) or ('4$' in line):
-                        if datetime.datetime.weekday(day) in [day_of_week['SAT'], day_of_week['SUN']]:
+                        if datetime.weekday(day) in [day_of_week['SAT'], day_of_week['SUN']]:
                             working_hour = float(line.split('$')[1].replace(',', '.'))
                             list_of_overtime[day.isoformat()]= working_hour
                         else:
-                            working_hour = float(line.split('$')[1].replace(',', '.'))-8
+                            working_hour = float(line.split('$')[1].replace(',', '.'))
                             list_of_overtime[day.isoformat()] = working_hour
         except:
             list_of_overtime['ERROR'] = 'BLAD W LINI %s' % num_of_line
@@ -117,6 +117,10 @@ def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), dat
                 name_of_holiday=name_of_holiday,
                 date_from=date_from,
                 date_to=date_to,
+            )
+            user_file = open_harm_file_for_user(user_id)
+            list_of_vacations[surname]['overtime'] = get_overtime_hours(
+                user_file
             )
         except FileNotFoundError:
             list_of_vacations[surname] = {'error':"Nie znaleziono pliku"}

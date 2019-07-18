@@ -47,7 +47,19 @@
     <tr id='{{name}}'>
 		<td>{{name}}</td>
 		{%for date in period_length %}
-			<td {% if date in list.vacations %} bgcolor="Red"{%endif%} >8</td>
+		{% if date in list.vacations %}
+			<td bgcolor="Red" >8</td>
+		{% elif date in list.overtime %}
+			{% if list.overtime|get_item:date == 0 %}
+				<td bgcolor="Red">{{list.overtime|get_item:date }}</td>
+			{% elif list.overtime|get_item:date < 8 %}
+				<td bgcolor="Blue">{{list.overtime|get_item:date }}</td>
+			{% else %}
+				<td bgcolor="Green">{{list.overtime|get_item:date }}</td>
+			{% endif %}
+		{% else %}
+			<td>8</td>
+		{%endif%}
 		{%endfor%}
     </tr>
     {% endfor %}

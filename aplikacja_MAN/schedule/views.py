@@ -6,6 +6,13 @@ from . import scripts
 from datetime import datetime, timedelta
 import csv
 
+from django.template.defaulttags import register
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key, None)
+
 from .scripts import handle_uploaded_file
 
 def create_date_range_list(date_from, num_days):
