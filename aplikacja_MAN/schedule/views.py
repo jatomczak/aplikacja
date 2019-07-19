@@ -91,7 +91,6 @@ def schedules_compare(request):
             second_list_id = request.POST['second_list']
             first_vacations_list = VacationsList.objects.get(id=first_list_id)
             second_vacations_list = VacationsList.objects.get(id=second_list_id)
-
             data = first_vacations_list.compare_two_list(second_vacations_list)
             return render(request, 'compare_schedules.html', {
                 'data': data,
