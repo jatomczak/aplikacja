@@ -4,6 +4,7 @@ from clients.models import User
 from aplikacja_MAN.settings import UPLOAD_FILE_PATH
 from django.core.validators import FileExtensionValidator
 from datetime import datetime
+from schedule import scripts
 # Create your models here.
 
 class FileExtensionValidator_PL(FileExtensionValidator):
@@ -50,6 +51,23 @@ class VacationsList(VacationTimeRangeModel):
             if vacations_from_first_list.filter(unique_id=vacation.unique_id).exists():
                 data['BRAKUJE NA 1 LISCIE'].append(vacation)
         return data
+
+    def compare_with_online_schedule(self, department_name):
+        holidays_list = scripts.get_data_from_harm_for_user(
+            department=department_name,
+            date_from=self.date_from,
+            date_to=self.date_to,
+        )
+        result = {'found': [], 'not_found': []}
+
+        for name, holiday_type in holidays_list.items():
+            for date_from in holiday_type['vacations']:
+                item = {'user_name': name, 'vacation_date': date_from}
+                if VacationDetails.objects.filter(list=self, vacation_date=date_from, user_name=name).exists():
+                    result['found'].append(item)
+                else:
+                    result['not_found'].append(item)
+        return result
 
 
 class VacationDetails(models.Model):

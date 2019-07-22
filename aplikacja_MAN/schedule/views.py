@@ -87,39 +87,16 @@ def schedules_compare(request):
     if request.method == 'POST':
         form = CompareVacationsListForm(owner=request.user, data=request.POST)
         if form.is_valid():
-            if request.POST['second_list'] == '':
-                return schedule_compare_with_online_data(request)
             first_list_id = request.POST['first_list']
+            department_name = request.user.get_group_name()
             second_list_id = request.POST['second_list']
             first_vacations_list = VacationsList.objects.get(id=first_list_id)
-            second_vacations_list = VacationsList.objects.get(id=second_list_id)
-            data = first_vacations_list.compare_two_list(second_vacations_list)
+            if request.POST['second_list'] == '':
+                data = first_vacations_list.compare_with_online_schedule(department_name)
+            else:
+                second_vacations_list = VacationsList.objects.get(id=second_list_id)
+                data = first_vacations_list.compare_two_list(second_vacations_list)
             return render(request, 'compare_schedules.html', {
                 'data': data,
             })
     return redirect('schedule:schedule_list')
-
-def schedule_compare_with_online_data(request):
-    first_list_id = request.POST['first_list']
-    first_vacations_list = VacationsList.objects.get(id=first_list_id)
-    date_from = first_vacations_list.date_from
-    date_to = first_vacations_list.date_to
-    department_name = request.user.get_group_name()
-    holidays_list = scripts.get_data_from_harm_for_user(
-        department=department_name,
-        date_from=date_from,
-        date_to=date_to,
-    )
-    result = {'found': [], 'not_found': []}
-    for name, holiday_type in holidays_list.items():
-        for date_from in holiday_type['vacations']:
-            if VacationDetails.objects.filter(
-                    list=first_vacations_list,
-                    vacation_date=date_from,
-                    user_name=name).exists():
-                result['found'].append({'user_name': name, 'vacation_date':date_from})
-            else:
-                result['found'].append({'user_name': name, 'vacation_date': date_from})
-    return render(request, 'compare_schedules.html', {
-        'data': result,
-    })
