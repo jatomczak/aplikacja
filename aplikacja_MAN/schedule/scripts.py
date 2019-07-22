@@ -124,7 +124,9 @@ def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), dat
             )
             user_file = open_harm_file_for_user(user_id)
             list_of_vacations[surname]['overtime'] = get_overtime_hours(
-                user_file
+                user_file,
+                date_from=date_from,
+                date_to=date_to,
             )
         except FileNotFoundError:
             list_of_vacations[surname] = {'error':"Nie znaleziono pliku"}

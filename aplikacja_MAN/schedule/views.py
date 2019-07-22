@@ -110,4 +110,16 @@ def schedule_compare_with_online_data(request):
         date_from=date_from,
         date_to=date_to,
     )
-    return str(holidays_list)
+    result = {'found': [], 'not_found': []}
+    for name, holiday_type in holidays_list.items():
+        for date_from in holiday_type['vacations']:
+            if VacationDetails.objects.filter(
+                    list=first_vacations_list,
+                    vacation_date=date_from,
+                    user_name=name).exists():
+                result['found'].append({'user_name': name, 'vacation_date':date_from})
+            else:
+                result['found'].append({'user_name': name, 'vacation_date': date_from})
+    return render(request, 'compare_schedules.html', {
+        'data': result,
+    })
