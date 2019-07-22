@@ -73,3 +73,4 @@ class TestSchedulesCompare(TestCase):
         requset.POST['second_list'] = ''
         response = schedules_compare(requset)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(b'correct', response.content)

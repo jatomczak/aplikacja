@@ -88,7 +88,7 @@ def schedules_compare(request):
         form = CompareVacationsListForm(owner=request.user, data=request.POST)
         if form.is_valid():
             if request.POST['second_list'] == '':
-                return HttpResponse('correct')
+                return schedule_compare_with_online_data(request)
             first_list_id = request.POST['first_list']
             second_list_id = request.POST['second_list']
             first_vacations_list = VacationsList.objects.get(id=first_list_id)
@@ -98,3 +98,16 @@ def schedules_compare(request):
                 'data': data,
             })
     return redirect('schedule:schedule_list')
+
+def schedule_compare_with_online_data(request):
+    first_list_id = request.POST['first_list']
+    first_vacations_list = VacationsList.objects.get(id=first_list_id)
+    date_from = first_vacations_list.date_from
+    date_to = first_vacations_list.date_to
+    department_name = request.user.get_group_name()
+    holidays_list = scripts.get_data_from_harm_for_user(
+        department=department_name,
+        date_from=date_from,
+        date_to=date_to,
+    )
+    return str(holidays_list)
