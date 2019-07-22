@@ -87,6 +87,8 @@ def schedules_compare(request):
     if request.method == 'POST':
         form = CompareVacationsListForm(owner=request.user, data=request.POST)
         if form.is_valid():
+            if request.POST['second_list'] == '':
+                return HttpResponse('correct')
             first_list_id = request.POST['first_list']
             second_list_id = request.POST['second_list']
             first_vacations_list = VacationsList.objects.get(id=first_list_id)

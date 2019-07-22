@@ -80,7 +80,6 @@ class UploadFileForm(forms.ModelForm):
 
 
 
-
 class UserModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.get_full_name()
@@ -88,7 +87,7 @@ class UserModelChoiceField(forms.ModelChoiceField):
 
 class CompareVacationsListForm(forms.Form):
     first_list = UserModelChoiceField(queryset=None)
-    second_list = UserModelChoiceField(queryset=None)
+    second_list = UserModelChoiceField(queryset=None, required=False, empty_label='online schedule')
 
     def __init__(self, owner, *args, **kwargs):
         super(CompareVacationsListForm, self).__init__(*args, **kwargs)

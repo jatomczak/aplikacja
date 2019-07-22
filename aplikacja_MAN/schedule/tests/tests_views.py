@@ -70,6 +70,6 @@ class TestSchedulesCompare(TestCase):
         requset.user = User.objects.get(id=1)
         requset.method = 'POST'
         requset.POST['first_list'] = 1
-        # requset.POST['second_list'] = 2
+        requset.POST['second_list'] = ''
         response = schedules_compare(requset)
         self.assertEqual(response.status_code, 200)
