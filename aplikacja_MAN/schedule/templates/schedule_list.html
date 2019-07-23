@@ -15,6 +15,7 @@
             <td>{{list.date_from}}</td>
             <td>{{list.date_to}}</td>
             <td>{{list.file}}</td>
+            <td><a href="{%url 'schedule:schedule_list' %}/{{list.name}}/delete">usun</a> </td>
         </tr>
     {%endfor%}
 </table>
