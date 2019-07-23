@@ -5,6 +5,7 @@ from aplikacja_MAN.settings import UPLOAD_FILE_PATH
 from django.core.validators import FileExtensionValidator
 from datetime import datetime
 from schedule import scripts
+import os
 # Create your models here.
 
 class FileExtensionValidator_PL(FileExtensionValidator):
@@ -29,6 +30,10 @@ class VacationsList(VacationTimeRangeModel):
 
     def get_full_name(self):
         return self.name
+
+    def remove(self):
+        self.file.delete()
+        self.delete()
 
     def get_vacation_details(self):
         return VacationDetails.objects.filter(list=self)

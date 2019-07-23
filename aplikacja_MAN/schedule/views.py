@@ -102,7 +102,7 @@ def schedules_compare(request):
     return redirect('schedule:schedule_list')
 
 def delete_list(request, list_name):
-    if not VacationsList.objects.filter(owner=request.user, name=list_name).exists():
-        return redirect('schedule:schedule_list')
-    VacationsList.objects.filter(owner=request.user, name=list_name).delete()
+    if VacationsList.objects.filter(owner=request.user, name=list_name).exists():
+        vacations_list = VacationsList.objects.get(owner=request.user, name=list_name)
+        vacations_list.remove()
     return redirect('schedule:schedule_list')
