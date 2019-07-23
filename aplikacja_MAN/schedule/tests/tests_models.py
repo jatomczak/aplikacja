@@ -126,7 +126,18 @@ class VacationsListTest(TestCase):
         mock = MagicMock(return_value=schedule_online)
         scripts.get_data_from_harm_for_user = mock
         response = vacations_list.compare_with_online_schedule('IBIS')
-        print(response)
         self.assertTrue({'user_name': 'Tomczak', 'vacation_date': '2019-01-01'} in response['found'])
         self.assertFalse({'user_name': 'Tomczak', 'vacation_date': '2019-01-04'} in response['found'])
-        self.assertTrue({'user_name': 'Tomczak', 'vacation_date': '2019-01-04'} in response['new'], response['new'])
+        self.assertTrue({'user_name': 'Tomczak', 'vacation_date': '2019-01-04'} in response['new'])
+
+    def test_correct_delete(self):
+        vacations_list = VacationsList.objects.get(id=1)
+        vacations_list.remove()
+        self.assertEqual(VacationsList.objects.count(), 1)
+
+    def test_correct_delete(self):
+        vacations_list = VacationsList.objects.get(id=1)
+        vacations_list.remove()
+        with self.assertRaises(AssertionError):
+            vacations_list.remove()
+        self.assertEqual(VacationsList.objects.count(), 1)

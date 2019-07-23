@@ -74,7 +74,6 @@ class VacationsList(VacationTimeRangeModel):
                     result['not_found'].append(item)
 
         vacations_from_first_list = self.get_vacation_details()
-        print(holidays_list)
         for vacation_details in vacations_from_first_list:
             item = dict()
             item['user_name'] = vacation_details.user_name
