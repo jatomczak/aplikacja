@@ -126,7 +126,7 @@ class VacationsListTest(TestCase):
         mock = MagicMock(return_value=schedule_online)
         scripts.get_data_from_harm_for_user = mock
         response = vacations_list.compare_with_online_schedule('IBIS')
+        print(response)
         self.assertTrue({'user_name': 'Tomczak', 'vacation_date': '2019-01-01'} in response['found'])
         self.assertFalse({'user_name': 'Tomczak', 'vacation_date': '2019-01-04'} in response['found'])
-        self.assertFalse({'user_name': 'Tomczak', 'vacation_date': '2019-01-04'} in response['not_found'])
-        self.assertTrue({'user_name': 'Tomczak', 'vacation_date': '2019-01-04'} in response['not_found'])
+        self.assertTrue({'user_name': 'Tomczak', 'vacation_date': '2019-01-04'} in response['new'], response['new'])

@@ -58,7 +58,7 @@ class VacationsList(VacationTimeRangeModel):
             date_from=self.date_from,
             date_to=self.date_to,
         )
-        result = {'found': [], 'not_found': []}
+        result = {'found': [], 'not_found': [], 'new':[]}
 
         for name, holiday_type in holidays_list.items():
             for date_from in holiday_type['vacations']:
@@ -67,6 +67,17 @@ class VacationsList(VacationTimeRangeModel):
                     result['found'].append(item)
                 else:
                     result['not_found'].append(item)
+
+        vacations_from_first_list = self.get_vacation_details()
+        print(holidays_list)
+        for vacation_details in vacations_from_first_list:
+            item = dict()
+            item['user_name'] = vacation_details.user_name
+            item['vacation_date'] = str(vacation_details.vacation_date.isoformat())
+            if not item['user_name'] in holidays_list:
+                result['new'].append(item)
+            elif not item['vacation_date'] in holidays_list[name]['vacations']:
+                result['new'].append(item)
         return result
 
 
