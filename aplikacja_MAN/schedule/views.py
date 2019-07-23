@@ -100,3 +100,6 @@ def schedules_compare(request):
                 'data': data,
             })
     return redirect('schedule:schedule_list')
+
+def delete_list(request, list_name):
+    return HttpResponse(str(list_name))
