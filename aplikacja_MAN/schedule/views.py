@@ -107,3 +107,7 @@ def delete_list(request, list_name):
         vacations_list.remove()
     return redirect('schedule:schedule_list')
 
+
+def schedule_download(request, category):
+    response = HttpResponse('TEST')
+    return response

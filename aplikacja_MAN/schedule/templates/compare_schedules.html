@@ -3,7 +3,8 @@
 {%block content%}
 <table>
     {%for category, vacations_list in data.items%}
-        <th>{{category}}</th>>
+        <th>{{category}}</th>
+        <th><a href="{%url 'schedule:download_schedule' category %}">Pobierz</a></th>
         {%for vacation in vacations_list%}
             <tr>
                 <td>{{vacation.user_name}}</td>
