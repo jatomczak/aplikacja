@@ -80,7 +80,7 @@ class VacationsList(VacationTimeRangeModel):
             item['vacation_date'] = str(vacation_details.vacation_date.isoformat())
             if not item['user_name'] in holidays_list:
                 result['new'].append(item)
-            elif not item['vacation_date'] in holidays_list[name]['vacations']:
+            elif not item['vacation_date'] in holidays_list[item['user_name']]['vacations']:
                 result['new'].append(item)
         return result
 

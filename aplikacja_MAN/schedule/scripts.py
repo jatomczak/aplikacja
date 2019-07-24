@@ -128,7 +128,6 @@ def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), dat
             )
         except FileNotFoundError:
             list_of_vacations[surname] = {'error':"Nie znaleziono pliku"}
-
     list_of_vacations = sort_dict(list_of_vacations)
     return list_of_vacations
 

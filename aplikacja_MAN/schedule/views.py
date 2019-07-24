@@ -64,7 +64,7 @@ def upload_schedule(request):
         if form.is_valid():
             with open(vacations_list.file.path) as csv_file:
                 csv_reader = csv.reader(csv_file, delimiter=';')
-                for vacation_date, hours, user_name, unique_id in csv_reader:
+                for user_name, vacation_date, hours,  unique_id in csv_reader:
                     VacationDetails.create_vacation_detalis(vacation_date, hours, user_name, unique_id, vacations_list)
                 return redirect('schedule:schedule_list')
     else:
@@ -106,3 +106,4 @@ def delete_list(request, list_name):
         vacations_list = VacationsList.objects.get(owner=request.user, name=list_name)
         vacations_list.remove()
     return redirect('schedule:schedule_list')
+

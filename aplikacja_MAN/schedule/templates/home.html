@@ -33,6 +33,9 @@
 		{%endfor %}
 		<input type="hidden" name="next" value="{{ request.GET.next }}">
 		<button type="submit" class=" standard-button fadeIn" >Załaduj</button>
+		{% if 'test' in user.user_id%}
+		<a href="{%url 'schedule:schedule_list' %}">LISTA</a>
+		{%endif%}
 	</form>
 </div>
 
