@@ -109,5 +109,11 @@ def delete_list(request, list_name):
 
 
 def schedule_download(request, category):
-    response = HttpResponse('TEST')
+    a= 'jacek'
+    b = 'tomczak'
+    c= 'ttt'
+    d='yyy'
+    result = ';'.join((a,b,c,d))
+    response = HttpResponse(result, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="foo.csv"'
     return response
