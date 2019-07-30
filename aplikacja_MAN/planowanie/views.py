@@ -2,8 +2,8 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 
-HOST_REDIRECT = 'http:////127.0.0.1'
-PORT_REDIRECT = '5000'
+HOST_REDIRECT = 'http:////10.131.80.125'
+PORT_REDIRECT = '5001'
 
 @login_required()
 def redirect_to_old_version(request):
