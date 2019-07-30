@@ -4,6 +4,8 @@ from clients.models import User
 from aplikacja_MAN.settings import UPLOAD_FILE_PATH
 from django.core.validators import FileExtensionValidator
 from datetime import datetime
+from schedule import scripts
+import os
 # Create your models here.
 
 class FileExtensionValidator_PL(FileExtensionValidator):
@@ -29,6 +31,10 @@ class VacationsList(VacationTimeRangeModel):
     def get_full_name(self):
         return self.name
 
+    def remove(self):
+        self.file.delete()
+        self.delete()
+
     def get_vacation_details(self):
         return VacationDetails.objects.filter(list=self)
 
@@ -50,6 +56,33 @@ class VacationsList(VacationTimeRangeModel):
             if vacations_from_first_list.filter(unique_id=vacation.unique_id).exists():
                 data['BRAKUJE NA 1 LISCIE'].append(vacation)
         return data
+
+    def compare_with_online_schedule(self, department_name):
+        holidays_list = scripts.get_data_from_harm_for_user(
+            department=department_name,
+            date_from=self.date_from,
+            date_to=self.date_to,
+        )
+        result = {'found': [], 'not_found': [], 'new':[]}
+
+        for name, holiday_type in holidays_list.items():
+            for date_from in holiday_type['vacations']:
+                item = {'user_name': name, 'vacation_date': date_from}
+                if VacationDetails.objects.filter(list=self, vacation_date=date_from, user_name=name).exists():
+                    result['found'].append(item)
+                else:
+                    result['not_found'].append(item)
+
+        vacations_from_first_list = self.get_vacation_details()
+        for vacation_details in vacations_from_first_list:
+            item = dict()
+            item['user_name'] = vacation_details.user_name
+            item['vacation_date'] = str(vacation_details.vacation_date.isoformat())
+            if not item['user_name'] in holidays_list:
+                result['new'].append(item)
+            elif not item['vacation_date'] in holidays_list[item['user_name']]['vacations']:
+                result['new'].append(item)
+        return result
 
 
 class VacationDetails(models.Model):

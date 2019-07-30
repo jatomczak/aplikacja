@@ -19,8 +19,8 @@
 <div class="fluid-container text-center">
 <div class="container harm-window  vivify  pullUp">
 
-<h1>HARMONOGRAM</h1>
-
+<h1>HARMONOGRAM </h1>
+{%if user.group%} <h3> {{user.group}}</h3> {% else %}<h6>Nie masz przypisanej grupy (np. IBIS) </h6>{%endif%}
 	<form method="post">
 		{% csrf_token %}
 		{% for item in form %}
@@ -33,6 +33,9 @@
 		{%endfor %}
 		<input type="hidden" name="next" value="{{ request.GET.next }}">
 		<button type="submit" class=" standard-button fadeIn" >Załaduj</button>
+		{% if 'test' in user.user_id%}
+		<a href="{%url 'schedule:schedule_list' %}">LISTA</a>
+		{%endif%}
 	</form>
 </div>
 
@@ -47,7 +50,19 @@
     <tr id='{{name}}'>
 		<td>{{name}}</td>
 		{%for date in period_length %}
-			<td {% if date in list %} bgcolor="Red"{%endif%} >8</td>
+		{% if date in list.vacations %}
+			<td bgcolor="Red" >8</td>
+		{% elif date in list.overtime %}
+			{% if list.overtime|get_item:date == 0 %}
+				<td bgcolor="Red">{{list.overtime|get_item:date }}</td>
+			{% elif list.overtime|get_item:date < 8 %}
+				<td bgcolor="Blue">{{list.overtime|get_item:date }}</td>
+			{% else %}
+				<td bgcolor="Green">{{list.overtime|get_item:date }}</td>
+			{% endif %}
+		{% else %}
+			<td>8</td>
+		{%endif%}
 		{%endfor%}
     </tr>
     {% endfor %}

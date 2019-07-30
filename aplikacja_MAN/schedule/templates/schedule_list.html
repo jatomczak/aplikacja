@@ -3,6 +3,7 @@
 {%block content%}
 
 <p>Twoje harmonogramy</p>
+<a href="{%url 'schedule:upload_schedule' %}"><b>ZALADUJ</b></a>
 <table>
     <th> Nazwa </th>
     <th> Data od </th>
@@ -15,6 +16,7 @@
             <td>{{list.date_from}}</td>
             <td>{{list.date_to}}</td>
             <td>{{list.file}}</td>
+            <td><a href="{%url 'schedule:schedule_list' %}/{{list.name}}/delete">usun</a> </td>
         </tr>
     {%endfor%}
 </table>

@@ -3,8 +3,6 @@ from datetime import date
 import holidays
 from . import users_list
 from datetime import datetime, timedelta
-import csv
-from .models import VacationDetails, VacationsList
 
 from aplikacja_MAN.settings import UPLOAD_FILE_PATH
 
@@ -71,6 +69,27 @@ def get_user_holiday(user_file, name_of_holiday='urlopy', date_from=date(2019,1,
 
     return list_of_holiday
 
+
+def get_overtime_hours(user_file, date_from=date(2019, 1, 1), date_to=date(2019, 12, 31)):
+    list_of_overtime = {}
+    for num_of_line, line in enumerate(user_file):
+        try:
+            day_of_year = count_day_of_year_based_on_numline(num_of_line)
+            if day_of_year >= 0:
+                day = convert_day_of_year_to_date(day_of_year)
+                if is_date_in_range(day, date_from, date_to):
+                    if ('3$' in line) or ('4$' in line):
+                        if datetime.weekday(day) in [day_of_week['SAT'], day_of_week['SUN']]:
+                            working_hour = float(line.split('$')[1].replace(',', '.'))
+                            list_of_overtime[day.isoformat()]= working_hour
+                        else:
+                            working_hour = float(line.split('$')[1].replace(',', '.'))
+                            list_of_overtime[day.isoformat()] = working_hour
+        except:
+            list_of_overtime['ERROR'] = 'BLAD W LINI %s' % num_of_line
+    return list_of_overtime
+
+
 def read_file_again(user_file):
     user_file.seek(0)
 
@@ -85,21 +104,31 @@ def remove_new_line_char(tekst):
     return tekst.replace('\n', '')
 
 
+def sort_dict(_dict):
+    return dict(sorted(_dict.items()))
+
+
 def get_data_from_harm_for_user(department: str, date_from=date(2019, 1, 1), date_to=date(2019, 12, 31), name_of_holiday='urlopy'):
     list_of_vacations = {}
     for user_id, surname in list_with_user_id_and_initials.get(department, {}).items():
+        list_of_vacations[surname] = {}
         try:
             user_file = open_harm_file_for_user(user_id)
-            list_of_vacations[surname] = get_user_holiday(
+            list_of_vacations[surname]['vacations'] = get_user_holiday(
                 user_file,
                 name_of_holiday=name_of_holiday,
                 date_from=date_from,
                 date_to=date_to,
             )
+            user_file = open_harm_file_for_user(user_id)
+            list_of_vacations[surname]['overtime'] = get_overtime_hours(
+                user_file,
+                date_from=date_from,
+                date_to=date_to,
+            )
         except FileNotFoundError:
             list_of_vacations[surname] = {'error':"Nie znaleziono pliku"}
-
-
+    list_of_vacations = sort_dict(list_of_vacations)
     return list_of_vacations
 
 
@@ -107,22 +136,3 @@ def handle_uploaded_file(f):
     with open(UPLOAD_FILE_PATH + 'test.csv', 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
-
-class CsvToDb:
-    file_path = 'test_vacations.csv'
-    date_format = '%d.%m.%Y'
-
-    def import_task(self, owner):
-        with open(self.file_path) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=';')
-            for vacation_date,  hours, user_name, unique_id in csv_reader:
-                vacation = VacationDetails()
-                vacation.vacation_date = datetime.strptime(vacation_date, self.date_format)
-                vacation.user_name = user_name
-                vacation.hours = hours
-                vacation.unique_id = unique_id
-                vacation.list = vacation_list
-                vacation.save()
-
-    def check_if_task_exist(self):
-        pass

@@ -40,6 +40,7 @@ class SelectTimeRangeForm(forms.ModelForm):
 
 
 class UploadFileForm(forms.ModelForm):
+    DATE_FORMAT = '%Y-%m-%d'
     user = None
 
     def create_upload_file_form(self, user):
@@ -72,11 +73,13 @@ class UploadFileForm(forms.ModelForm):
                 raise forms.ValidationError('PLIK NIE POSIADA ODPOWIEDNIJ LICZBY KOLUMN - LINIA %d' % (num_line + 1))
             unique_element = split_line[3]
             unique_list.append(unique_element)
-
             if len(unique_list) != len(set(unique_list)):
                 raise forms.ValidationError('PLIK ZAWIERA DUPLIKATY W KOLUMNIE CZWARTEJ - LINIA %d' % (num_line + 1))
+            try:
+                datetime.strptime(split_line[1], self.DATE_FORMAT)
+            except ValueError:
+                raise forms.ValidationError('BLEDNY FORMAT DATY - LINIA %d' %(num_line + 1))
         return file
-
 
 
 
@@ -88,7 +91,7 @@ class UserModelChoiceField(forms.ModelChoiceField):
 
 class CompareVacationsListForm(forms.Form):
     first_list = UserModelChoiceField(queryset=None)
-    second_list = UserModelChoiceField(queryset=None)
+    second_list = UserModelChoiceField(queryset=None, required=False, empty_label='online schedule')
 
     def __init__(self, owner, *args, **kwargs):
         super(CompareVacationsListForm, self).__init__(*args, **kwargs)

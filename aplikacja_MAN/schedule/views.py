@@ -1,10 +1,18 @@
 from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import now
 from .forms import SelectTimeRangeForm, UploadFileForm, CompareVacationsListForm
 from .models import VacationsList, VacationDetails
 from . import scripts
 from datetime import datetime, timedelta
 import csv
+
+from django.template.defaulttags import register
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key, None)
 
 from .scripts import handle_uploaded_file
 
@@ -57,7 +65,7 @@ def upload_schedule(request):
         if form.is_valid():
             with open(vacations_list.file.path) as csv_file:
                 csv_reader = csv.reader(csv_file, delimiter=';')
-                for vacation_date, hours, user_name, unique_id in csv_reader:
+                for user_name, vacation_date, hours,  unique_id in csv_reader:
                     VacationDetails.create_vacation_detalis(vacation_date, hours, user_name, unique_id, vacations_list)
                 return redirect('schedule:schedule_list')
     else:
@@ -81,12 +89,35 @@ def schedules_compare(request):
         form = CompareVacationsListForm(owner=request.user, data=request.POST)
         if form.is_valid():
             first_list_id = request.POST['first_list']
+            department_name = request.user.get_group_name()
             second_list_id = request.POST['second_list']
             first_vacations_list = VacationsList.objects.get(id=first_list_id)
-            second_vacations_list = VacationsList.objects.get(id=second_list_id)
-
-            data = first_vacations_list.compare_two_list(second_vacations_list)
+            if request.POST['second_list'] == '':
+                data = first_vacations_list.compare_with_online_schedule(department_name)
+            else:
+                second_vacations_list = VacationsList.objects.get(id=second_list_id)
+                data = first_vacations_list.compare_two_list(second_vacations_list)
+            request.session['data'] = data
             return render(request, 'compare_schedules.html', {
                 'data': data,
             })
     return redirect('schedule:schedule_list')
+
+def delete_list(request, list_name):
+    if VacationsList.objects.filter(owner=request.user, name=list_name).exists():
+        vacations_list = VacationsList.objects.get(owner=request.user, name=list_name)
+        vacations_list.remove()
+    return redirect('schedule:schedule_list')
+
+@login_required
+def schedule_download(request, category):
+    file_name = str(now())[0:10]
+    user_name = request.user
+    with open(user_name, 'w', newline='\n') as csvfile:
+        fieldnames = ['user_name', 'vacation_date']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';')
+        writer.writerows(request.session['data'][category])
+    with open('names.csv', 'r') as csvfile:
+        response = HttpResponse(csvfile.read(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (category, file_name)
+    return response
