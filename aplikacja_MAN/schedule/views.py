@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import now
 from .forms import SelectTimeRangeForm, UploadFileForm, CompareVacationsListForm
 from .models import VacationsList, VacationDetails
 from . import scripts
@@ -96,6 +97,7 @@ def schedules_compare(request):
             else:
                 second_vacations_list = VacationsList.objects.get(id=second_list_id)
                 data = first_vacations_list.compare_two_list(second_vacations_list)
+            request.session['data'] = data
             return render(request, 'compare_schedules.html', {
                 'data': data,
             })
@@ -107,13 +109,15 @@ def delete_list(request, list_name):
         vacations_list.remove()
     return redirect('schedule:schedule_list')
 
-
+@login_required
 def schedule_download(request, category):
-    a= 'jacek'
-    b = 'tomczak'
-    c= 'ttt'
-    d='yyy'
-    result = ';'.join((a,b,c,d))
-    response = HttpResponse(result, content_type='application/vnd.ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="foo.csv"'
+    file_name = str(now())[0:10]
+    user_name = request.user
+    with open(user_name, 'w', newline='\n') as csvfile:
+        fieldnames = ['user_name', 'vacation_date']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';')
+        writer.writerows(request.session['data'][category])
+    with open('names.csv', 'r') as csvfile:
+        response = HttpResponse(csvfile.read(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (category, file_name)
     return response
