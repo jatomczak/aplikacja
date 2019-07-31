@@ -40,7 +40,7 @@ class SelectTimeRangeForm(forms.ModelForm):
 
 
 class UploadFileForm(forms.ModelForm):
-    DATE_FORMAT = '%Y-%m-%d'
+    DATE_FORMAT ='%d.%m.%Y'
     user = None
 
     def create_upload_file_form(self, user):
@@ -63,6 +63,7 @@ class UploadFileForm(forms.ModelForm):
             raise forms.ValidationError('Lista o podanej nazwie już istnieje')
         return name
 
+    @property
     def clean_file(self):
         unique_list = []
         file = self.cleaned_data.get('file')
@@ -78,7 +79,7 @@ class UploadFileForm(forms.ModelForm):
             try:
                 datetime.strptime(split_line[1], self.DATE_FORMAT)
             except ValueError:
-                raise forms.ValidationError('BLEDNY FORMAT DATY - LINIA %d' %(num_line + 1))
+                raise forms.ValidationError('\'%s\' - BLEDNY FORMAT DATY - LINIA %d' %(split_line[1], (num_line + 1)))
         return file
 
 

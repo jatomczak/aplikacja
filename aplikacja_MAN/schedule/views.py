@@ -112,12 +112,13 @@ def delete_list(request, list_name):
 @login_required
 def schedule_download(request, category):
     file_name = str(now())[0:10]
-    user_name = request.user
-    with open(user_name, 'w', newline='\n') as csvfile:
+    user_name = str(request.user.id)
+    file_path = "uploads/schedule/%s" % user_name
+    with open(file_path, 'w', newline='\n') as csvfile:
         fieldnames = ['user_name', 'vacation_date']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';')
         writer.writerows(request.session['data'][category])
-    with open('names.csv', 'r') as csvfile:
+    with open(file_path, 'r') as csvfile:
         response = HttpResponse(csvfile.read(), content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = 'attachment; filename="%s_%s.csv"' % (category, file_name)
     return response
