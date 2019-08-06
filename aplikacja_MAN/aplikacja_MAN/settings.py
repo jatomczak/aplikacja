@@ -78,7 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'aplikacja_MAN.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -87,14 +86,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
-    'iwh': {
-        'DATABASE_ENGINE': 'django.db.backends.oracle',
-        'DATABASE_NAME': 'iwh',
-        'DATABASE_USER': 'uall',
-        'DATABASE_PASSWORD': 'uall',
-        'DATABASE_HOST': 'mnp549.dc.man.lan',
-        'DATABASE_PORT': '1521',
-    }
 }
 
 
