@@ -18,14 +18,12 @@ def timethis(func):
 class OkbvTest(TestCase):
     @timethis
     def test_oracle_with_query(self):
-        with UseOracleDb() as cursor:
-            cursor.execute("select * from Beom.iwh_aufwaende where lub_nr ='79778'")
-            result = cursor.fetchall()
+        # with UseOracleDb() as cursor:
+        #     cursor.execute("select * from Beom.iwh_aufwaende where lub_nr ='79778'")
+        #     result = cursor.fetchall()
+            pass
 
     @timethis
     def test_oracle_db_2(self):
-        with UseOracleDb() as cursor:
+        # with UseOracleDb() as cursor:
             pass
-
-
-# Create your tests here.

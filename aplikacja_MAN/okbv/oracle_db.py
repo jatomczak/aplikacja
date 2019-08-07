@@ -24,7 +24,6 @@ class UseDb:
         return self.cursor
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print("zakonczono połaczenie")
         self.close_connection()
 
     def send_request(self, request: str):
