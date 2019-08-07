@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import UploadFileForm
+from .models import OkbvFile
 
 
 def home(request):
@@ -18,3 +19,17 @@ def upload_file(request):
     return render(request, 'upload_file.html', {
         'form': form,
     })
+
+
+def files_list(request):
+    files_list = OkbvFile.objects.filter(owner=request.user)
+    return render(request, 'files_list.html', {
+        'files_list': files_list
+    })
+
+
+def delete_file(request, file_name):
+    if OkbvFile.objects.filter(owner=request.user, name=file_name).exists():
+        file = OkbvFile.objects.get(owner=request.user, name=file_name)
+        file.remove()
+    return redirect('okbv:files_list')

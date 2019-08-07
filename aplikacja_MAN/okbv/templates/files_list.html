@@ -1,0 +1,15 @@
+{%block content%}
+
+<p>Twoje pliki</p>
+<a href="{%url 'okbv:upload_file' %}"><b>ZALADUJ</b></a>
+<table>
+    <th> Nazwa </th>
+    {% for file in files_list %}
+        <tr>
+            <td>{{file.name}}</td>
+            <td><a href="{%url 'okbv:files_list'%}{{file.name}}/delete">usun</a> </td>
+        </tr>
+    {%endfor%}
+</table>
+
+{%endblock%}
