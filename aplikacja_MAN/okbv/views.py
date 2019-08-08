@@ -33,3 +33,23 @@ def delete_file(request, file_name):
         file = OkbvFile.objects.get(owner=request.user, name=file_name)
         file.remove()
     return redirect('okbv:files_list')
+
+
+def read_file(request, file_name):
+    if not OkbvFile.objects.filter(owner=request.user, name=file_name).exists():
+        return redirect('okbv:files_list')
+
+    file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
+    text_file = file_object.read_file()
+    return render(request, 'read_file.html', {
+        'text_file': text_file
+    })
+
+
+def start_file_processing(request, file_name):
+    file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
+    lub_nr_list = file_object.get_unique_lub_nr()
+    return render(request, 'file_processing.html', {
+        'lub_nr_list': lub_nr_list
+    })
+
