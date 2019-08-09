@@ -60,11 +60,19 @@ class OkbvFile(models.Model):
                 result.append(row[self.file_headers['lub_nr']])
         return sorted(set(result))
 
+    def create_bus_object(self):
+        lub_nr_list = self.get_unique_lub_nr()
+        for lub_nr in lub_nr_list:
+            bus = Bus()
+            bus.lub_nr = lub_nr
+            bus.from_file = self
+            bus.save()
+
 
 class Bus(models.Model):
-    bus_nr = models.CharField(max_length=20)
+    bus_nr = models.CharField(max_length=20, null=True)
     lub_nr = models.CharField(max_length=20)
-    t1 = models.DateField()
+    t1 = models.DateField(null=True)
     from_file = models.ForeignKey(OkbvFile, on_delete=models.CASCADE)
 
 

@@ -7,9 +7,13 @@
 <body>
 <table>
     <tr>LUB_NR</tr>
-    {%for lub_nr in lub_nr_list%}
+    <tr>BUS_NR</tr>
+    <tr>T1</tr>
+    {%for bus in bus_list%}
     <tr>
-        <td>{{lub_nr}}</td>
+        <td>{{bus.lub_nr}}</td>
+        <td>{{bus.bus_nr}}</td>
+        <td>{{bus.t1}}</td>
     </tr>
     {%endfor%}
 </table>
