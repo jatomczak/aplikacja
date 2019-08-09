@@ -30,7 +30,6 @@ class InsensitiveDictReader(DictReader):
 
 class OkbvFile(models.Model):
     file_headers = {'lub_nr': 'LUB_NR'}
-
     file_path = UPLOAD_FILE_PATH + 'okbv'
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
@@ -61,5 +60,11 @@ class OkbvFile(models.Model):
                 result.append(row[self.file_headers['lub_nr']])
         return sorted(set(result))
 
+
+class Bus(models.Model):
+    bus_nr = models.CharField(max_length=20)
+    lub_nr = models.CharField(max_length=20)
+    t1 = models.DateField()
+    from_file = models.ForeignKey(OkbvFile, on_delete=models.CASCADE)
 
 
