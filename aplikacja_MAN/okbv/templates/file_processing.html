@@ -14,6 +14,16 @@
         <td>{{bus.lub_nr}}</td>
         <td>{{bus.bus_nr}}</td>
         <td>{{bus.t1}}</td>
+        {% for item in bus.nachtrag %}
+            <tr>
+                <td></td>
+                <td>{{item.version}}</td>
+                <td>{{item.type}}</td>
+                <td>{{item.status}}</td>
+                <td>{{item.user}}</td>
+                <td>{{item.status_date}}</td>
+            </tr>
+        {% endfor %}
     </tr>
     {%endfor%}
 </table>

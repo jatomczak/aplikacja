@@ -72,7 +72,40 @@ class OkbvFile(models.Model):
 class Bus(models.Model):
     bus_nr = models.CharField(max_length=20, null=True)
     lub_nr = models.CharField(max_length=20)
+    quantity = 0
     t1 = models.DateField(null=True)
     from_file = models.ForeignKey(OkbvFile, on_delete=models.CASCADE)
 
+    def set_t1(self, cursor):
+        query = "select DATUM_IST from Beom.iwh_meilensteine where lub_nr ='%s' and MEILENSTEIN='T1'"
+        cursor.execute(query % self.lub_nr)
+        result = cursor.fetchall()
+        if len(result):
+            if len(result[0]):
+                self.t1 = result[0][0]
+
+    def create_nachtrag(self, cursor):
+        query = "select LUB_NR, VERSION_NR, GEWERK_NAME, STATUS, STAT_USER, STATUS_DATUM " \
+                "from Beom.iwh_gewerke where lub_nr ='%s' and " \
+                "(GEWERK_NAME = 'IBIS' or GEWERK_NAME='Elektrik')"
+        cursor.execute(query % self.lub_nr)
+        result = cursor.fetchall()
+        for [_, version, type, status, user, date] in result:
+            nachtrag = Nachtrag()
+            nachtrag.Bus = self
+            nachtrag.version = version
+            nachtrag.type = type
+            nachtrag.status = status
+            nachtrag.user = user
+            nachtrag.status_date = date
+            nachtrag.save()
+
+
+class Nachtrag(models.Model):
+    Bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
+    version = models.IntegerField()
+    type = models.CharField(max_length=10)
+    status = models.CharField(max_length=30)
+    user = models.CharField(max_length=10, null=True)
+    status_date = models.DateField(null=True)
 
