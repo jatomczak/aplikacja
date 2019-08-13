@@ -6,6 +6,7 @@ from csv import DictReader
 from .oracle_db import UseOracleDb
 from django.forms.models import model_to_dict
 
+
 class FileExtensionValidator_PL(FileExtensionValidator):
     message = (
         "Niedozwolony format pliku. Format : '%(extension)s' nie jest dozwolony. "
@@ -83,7 +84,34 @@ class OkbvFile(models.Model):
                 bus.create_nachtrag(cursor)
 
     def compare_file_with_db(self):
-        return model_to_dict(self)
+        result = {}
+        bus_list = Bus.objects.filter(from_file=self)
+        for bus in bus_list:
+            nachtrags_list = Nachtrag.objects.filter(bus=bus)
+            for nachtrag in nachtrags_list:
+                if bus.lub_nr not in result:
+                    result[bus.lub_nr] = []
+                result[bus.lub_nr].append(nachtrag.to_dict())
+        return result
+
+    def convert_file_to_dict(self):
+        result = {}
+        with open(self.file.path) as f:
+            f_csv = InsensitiveDictReader(f, delimiter=';')
+            for row in f_csv:
+                lub_nr = row[self.file_headers['lub_nr']]
+                version = row[self.file_headers['version']]
+                type = row[self.file_headers['type']]
+                status = row[self.file_headers['status']]
+                row_to_dict = {'version': version,
+                               'type': type,
+                               'status': status,
+                               }
+                if lub_nr not in result:
+                    result[lub_nr] = []
+
+                result[lub_nr].append(row_to_dict)
+        return result
 
 class Bus(models.Model):
     bus_nr = models.CharField(max_length=20, null=True)
@@ -130,4 +158,10 @@ class Nachtrag(models.Model):
 
     class Meta:
         unique_together = ('bus', 'version', 'type')
+
+    def to_dict(self):
+        return {'version': self.version,
+                'type': self.type,
+                'status': self.status,
+                }
 

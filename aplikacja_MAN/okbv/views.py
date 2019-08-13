@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import UploadFileForm
 from .models import OkbvFile,Bus, Nachtrag
-from .oracle_db import UseOracleDb
 
 
 def home(request):
@@ -66,4 +65,12 @@ def show_data_from_db(request, file_name):
 
 def compare_file_with_db(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
-    return HttpResponse(str(file_object.compare_file_with_db()))
+    result = file_object.convert_file_to_dict()
+    result2 = file_object.compare_file_with_db()
+    for lub_nr, nachtrags_list in result2.items():
+        for nachtrag in nachtrags_list:
+            if nachtrag in result[lub_nr]:
+                print("znaleziono ", nachtrag)
+            else:
+                print("NIE znaleziono ", nachtrag)
+    return HttpResponse(str(result2))
