@@ -4,6 +4,7 @@ from aplikacja_MAN.settings import UPLOAD_FILE_PATH
 from clients.models import User
 from csv import DictReader
 from .oracle_db import UseOracleDb
+from django.forms.models import model_to_dict
 
 class FileExtensionValidator_PL(FileExtensionValidator):
     message = (
@@ -31,9 +32,9 @@ class InsensitiveDictReader(DictReader):
 class OkbvFile(models.Model):
     file_headers = {
         'lub_nr': 'LUB_NR',
-        # 'version': 'VERSION',
-        # 'type': 'NACHTRAG_TYPE',
-        # 'status': 'NACHTRAG_STATUS',
+        'version': 'VERSION',
+        'type': 'NACHTRAG_TYPE',
+        'status': 'NACHTRAG_STATUS',
     }
     file_path = UPLOAD_FILE_PATH + 'okbv'
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -80,6 +81,9 @@ class OkbvFile(models.Model):
                 bus.set_t1(cursor)
                 bus.save()
                 bus.create_nachtrag(cursor)
+
+    def compare_file_with_db(self):
+        return model_to_dict(self)
 
 class Bus(models.Model):
     bus_nr = models.CharField(max_length=20, null=True)

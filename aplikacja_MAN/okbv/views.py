@@ -64,3 +64,6 @@ def show_data_from_db(request, file_name):
         'bus_list': bus_list,
     })
 
+def compare_file_with_db(request, file_name):
+    file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
+    return HttpResponse(str(file_object.compare_file_with_db()))

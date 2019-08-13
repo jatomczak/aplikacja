@@ -12,4 +12,5 @@ urlpatterns = [
     path('files_list/<file_name>/delete', views.delete_file, name='delete_file'),
     path('files_list/<file_name>/start', views.start_file_processing , name='file_proccesing'),
     path('files_list/<file_name>/from_db', views.show_data_from_db , name='data_from_db'),
+    path('files_list/<file_name>/compare', views.compare_file_with_db , name='compare_with_db'),
 ]
