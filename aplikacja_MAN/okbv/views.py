@@ -16,7 +16,7 @@ def upload_file(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             form.create_upload_file_form(request.user)
-            return redirect('okbv:home')
+            return redirect('okbv:files_list')
     else:
         form = UploadFileForm()
     return render(request, 'upload_file.html', {
@@ -51,12 +51,13 @@ def read_file(request, file_name):
 
 def start_file_processing(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
-    file_object.create_bus_object()
     bus_list = Bus.objects.filter(from_file=file_object)
-
-    for bus in bus_list:
-        bus.nachtrag = Nachtrag.objects.filter(bus=bus).order_by('version')
-
+    with UseOracleDb() as cursor:
+        for bus in bus_list:
+            bus.set_t1(cursor)
+            bus.save()
+            bus.create_nachtrag(cursor)
+            bus.nachtrag = Nachtrag.objects.filter(bus=bus).order_by('version')
     return render(request, 'file_processing.html', {
         'bus_list': bus_list,
     })

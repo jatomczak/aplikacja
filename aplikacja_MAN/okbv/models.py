@@ -31,9 +31,9 @@ class InsensitiveDictReader(DictReader):
 class OkbvFile(models.Model):
     file_headers = {
         'lub_nr': 'LUB_NR',
-        'version': 'VERSION',
-        'type': 'NACHTRAG_TYPE',
-        'status': 'NACHTRAG_STATUS',
+        # 'version': 'VERSION',
+        # 'type': 'NACHTRAG_TYPE',
+        # 'status': 'NACHTRAG_STATUS',
     }
     file_path = UPLOAD_FILE_PATH + 'okbv'
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -65,22 +65,22 @@ class OkbvFile(models.Model):
                 result.append(row[self.file_headers['lub_nr']])
         return sorted(set(result))
 
-    def create_nachtrags(self):
-        with open(self.file.path) as f:
-            f_csv = InsensitiveDictReader(f, delimiter=';')
-            for row in f_csv:
-                lub_nr = row[self.file_headers['lub_nr']]
-                type = row[self.file_headers['type']]
-                version = row[self.file_headers['version']]
-                status = row[self.file_headers['status']]
-
-                bus = Bus.objects.get(lub_nr=lub_nr, from_file=self)
-                nachtrag = Nachtrag()
-                nachtrag.bus = bus
-                nachtrag.version = version
-                nachtrag.type = type
-                nachtrag.status = status
-                nachtrag.save()
+    # def create_nachtrags(self):
+    #     with open(self.file.path) as f:
+    #         f_csv = InsensitiveDictReader(f, delimiter=';')
+    #         for row in f_csv:
+    #             lub_nr = row[self.file_headers['lub_nr']]
+    #             type = row[self.file_headers['type']]
+    #             version = row[self.file_headers['version']]
+    #             status = row[self.file_headers['status']]
+    #
+    #             bus = Bus.objects.get(lub_nr=lub_nr, from_file=self)
+    #             nachtrag = Nachtrag()
+    #             nachtrag.bus = bus
+    #             nachtrag.version = version
+    #             nachtrag.type = type
+    #             nachtrag.status = status
+    #             nachtrag.save()
 
     def create_bus_object(self):
         lub_nr_list = self.get_unique_lub_nr()
@@ -114,7 +114,7 @@ class Bus(models.Model):
         result = cursor.fetchall()
         for [_, version, type, status, user, date] in result:
             nachtrag = Nachtrag()
-            nachtrag.Bus = self
+            nachtrag.bus = self
             nachtrag.version = version
             nachtrag.type = type
             nachtrag.status = status
