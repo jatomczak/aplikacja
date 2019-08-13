@@ -81,13 +81,13 @@ class OkbvFile(models.Model):
             for bus in bus_list:
                 bus.set_t1(cursor)
                 bus.save()
-                bus.create_nachtrag(cursor)
+                bus.create_nachtrag_from_db(cursor)
 
     def compare_file_with_db(self):
         result = {}
         bus_list = Bus.objects.filter(from_file=self)
         for bus in bus_list:
-            nachtrags_list = Nachtrag.objects.filter(bus=bus)
+            nachtrags_list = NachtragFromDb.objects.filter(bus=bus)
             for nachtrag in nachtrags_list:
                 if bus.lub_nr not in result:
                     result[bus.lub_nr] = []
@@ -131,14 +131,14 @@ class Bus(models.Model):
             if len(result[0]):
                 self.t1 = result[0][0]
 
-    def create_nachtrag(self, cursor):
+    def create_nachtrag_from_db(self, cursor):
         query = "select LUB_NR, VERSION_NR, GEWERK_NAME, STATUS, STAT_USER, STATUS_DATUM " \
                 "from Beom.iwh_gewerke where lub_nr ='%s' and " \
                 "(GEWERK_NAME = 'IBIS' or GEWERK_NAME='Elektrik')"
         cursor.execute(query % self.lub_nr)
         result = cursor.fetchall()
         for [_, version, type, status, user, date] in result:
-            nachtrag = Nachtrag()
+            nachtrag = NachtragFromDb()
             nachtrag.bus = self
             nachtrag.version = version
             nachtrag.type = type
@@ -165,3 +165,10 @@ class Nachtrag(models.Model):
                 'status': self.status,
                 }
 
+
+class NachtragFromDb(Nachtrag):
+    pass
+
+
+class NachtragFromDbFromFile(Nachtrag):
+    pass

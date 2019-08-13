@@ -3,7 +3,7 @@ from builtins import filter
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import UploadFileForm
-from .models import OkbvFile,Bus, Nachtrag
+from .models import OkbvFile,Bus, NachtragFromDb
 
 
 def home(request):
@@ -58,7 +58,7 @@ def show_data_from_db(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
     bus_list = Bus.objects.filter(from_file=file_object)
     for bus in bus_list:
-        bus.nachtrag = Nachtrag.objects.filter(bus=bus).order_by('version')
+        bus.nachtrag = NachtragFromDb.objects.filter(bus=bus).order_by('version')
     return render(request, 'file_processing.html', {
         'bus_list': bus_list,
     })
@@ -68,6 +68,7 @@ def compare_file_with_db(request, file_name):
     result = file_object.convert_file_to_dict()
     result2 = file_object.compare_file_with_db()
     for lub_nr, nachtrags_list in result2.items():
+        print('LUB_NR ', lub_nr)
         for nachtrag in nachtrags_list:
             if nachtrag in result[lub_nr]:
                 print("znaleziono ", nachtrag)
