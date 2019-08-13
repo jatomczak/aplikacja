@@ -29,7 +29,12 @@ class InsensitiveDictReader(DictReader):
 
 
 class OkbvFile(models.Model):
-    file_headers = {'lub_nr': 'LUB_NR'}
+    file_headers = {
+        'lub_nr': 'LUB_NR',
+        'version': 'VERSION',
+        'type': 'NACHTRAG_TYPE',
+        'status': 'NACHTRAG_STATUS',
+    }
     file_path = UPLOAD_FILE_PATH + 'okbv'
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
@@ -59,6 +64,23 @@ class OkbvFile(models.Model):
             for row in f_csv:
                 result.append(row[self.file_headers['lub_nr']])
         return sorted(set(result))
+
+    def create_nachtrags(self):
+        with open(self.file.path) as f:
+            f_csv = InsensitiveDictReader(f, delimiter=';')
+            for row in f_csv:
+                lub_nr = row[self.file_headers['lub_nr']]
+                type = row[self.file_headers['type']]
+                version = row[self.file_headers['version']]
+                status = row[self.file_headers['status']]
+
+                bus = Bus.objects.get(lub_nr=lub_nr, from_file=self)
+                nachtrag = Nachtrag()
+                nachtrag.bus = bus
+                nachtrag.version = version
+                nachtrag.type = type
+                nachtrag.status = status
+                nachtrag.save()
 
     def create_bus_object(self):
         lub_nr_list = self.get_unique_lub_nr()
@@ -102,7 +124,7 @@ class Bus(models.Model):
 
 
 class Nachtrag(models.Model):
-    Bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
+    bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
     version = models.IntegerField()
     type = models.CharField(max_length=10)
     status = models.CharField(max_length=30)

@@ -53,12 +53,10 @@ def start_file_processing(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
     file_object.create_bus_object()
     bus_list = Bus.objects.filter(from_file=file_object)
-    with UseOracleDb() as cursor:
-        for bus in bus_list:
-            bus.set_t1(cursor)
-            bus.save()
-            bus.create_nachtrag(cursor)
-            bus.nachtrag = Nachtrag.objects.filter(Bus=bus)
+
+    for bus in bus_list:
+        bus.nachtrag = Nachtrag.objects.filter(bus=bus).order_by('version')
+
     return render(request, 'file_processing.html', {
         'bus_list': bus_list,
     })
