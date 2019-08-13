@@ -13,7 +13,6 @@ class UploadFileForm(forms.ModelForm):
             okbv_file.owner = user
             okbv_file.save()
             okbv_file.create_bus_object()
-            # okbv_file.create_nachtrags()
             return okbv_file
 
     class Meta:

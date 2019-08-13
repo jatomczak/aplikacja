@@ -11,4 +11,5 @@ urlpatterns = [
     path('files_list/<file_name>', views.read_file, name='read_file'),
     path('files_list/<file_name>/delete', views.delete_file, name='delete_file'),
     path('files_list/<file_name>/start', views.start_file_processing , name='file_proccesing'),
+    path('files_list/<file_name>/from_db', views.show_data_from_db , name='data_from_db'),
 ]

@@ -51,13 +51,15 @@ def read_file(request, file_name):
 
 def start_file_processing(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
+    file_object.download_data_from_db()
+    return redirect('okbv:files_list')
+
+
+def show_data_from_db(request, file_name):
+    file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
     bus_list = Bus.objects.filter(from_file=file_object)
-    with UseOracleDb() as cursor:
-        for bus in bus_list:
-            bus.set_t1(cursor)
-            bus.save()
-            bus.create_nachtrag(cursor)
-            bus.nachtrag = Nachtrag.objects.filter(bus=bus).order_by('version')
+    for bus in bus_list:
+        bus.nachtrag = Nachtrag.objects.filter(bus=bus).order_by('version')
     return render(request, 'file_processing.html', {
         'bus_list': bus_list,
     })

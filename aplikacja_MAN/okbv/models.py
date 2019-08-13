@@ -3,7 +3,7 @@ from django.core.validators import FileExtensionValidator
 from aplikacja_MAN.settings import UPLOAD_FILE_PATH
 from clients.models import User
 from csv import DictReader
-
+from .oracle_db import UseOracleDb
 
 class FileExtensionValidator_PL(FileExtensionValidator):
     message = (
@@ -65,23 +65,6 @@ class OkbvFile(models.Model):
                 result.append(row[self.file_headers['lub_nr']])
         return sorted(set(result))
 
-    # def create_nachtrags(self):
-    #     with open(self.file.path) as f:
-    #         f_csv = InsensitiveDictReader(f, delimiter=';')
-    #         for row in f_csv:
-    #             lub_nr = row[self.file_headers['lub_nr']]
-    #             type = row[self.file_headers['type']]
-    #             version = row[self.file_headers['version']]
-    #             status = row[self.file_headers['status']]
-    #
-    #             bus = Bus.objects.get(lub_nr=lub_nr, from_file=self)
-    #             nachtrag = Nachtrag()
-    #             nachtrag.bus = bus
-    #             nachtrag.version = version
-    #             nachtrag.type = type
-    #             nachtrag.status = status
-    #             nachtrag.save()
-
     def create_bus_object(self):
         lub_nr_list = self.get_unique_lub_nr()
         for lub_nr in lub_nr_list:
@@ -90,6 +73,13 @@ class OkbvFile(models.Model):
             bus.from_file = self
             bus.save()
 
+    def download_data_from_db(self):
+        bus_list = Bus.objects.filter(from_file=self)
+        with UseOracleDb() as cursor:
+            for bus in bus_list:
+                bus.set_t1(cursor)
+                bus.save()
+                bus.create_nachtrag(cursor)
 
 class Bus(models.Model):
     bus_nr = models.CharField(max_length=20, null=True)
@@ -121,7 +111,6 @@ class Bus(models.Model):
             nachtrag.user = user
             nachtrag.status_date = date
             nachtrag.save()
-
 
 class Nachtrag(models.Model):
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
