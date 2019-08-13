@@ -84,9 +84,12 @@ class OkbvFile(models.Model):
 class Bus(models.Model):
     bus_nr = models.CharField(max_length=20, null=True)
     lub_nr = models.CharField(max_length=20)
-    quantity = 0
+    quantity = models.IntegerField(default=0)
     t1 = models.DateField(null=True)
     from_file = models.ForeignKey(OkbvFile, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('from_file', 'lub_nr')
 
     def set_t1(self, cursor):
         query = "select DATUM_IST from Beom.iwh_meilensteine where lub_nr ='%s' and MEILENSTEIN='T1'"
@@ -112,6 +115,7 @@ class Bus(models.Model):
             nachtrag.status_date = date
             nachtrag.save()
 
+
 class Nachtrag(models.Model):
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
     version = models.IntegerField()
@@ -119,4 +123,7 @@ class Nachtrag(models.Model):
     status = models.CharField(max_length=30)
     user = models.CharField(max_length=10, null=True)
     status_date = models.DateField(null=True)
+
+    class Meta:
+        unique_together = ('bus', 'version', 'type')
 
