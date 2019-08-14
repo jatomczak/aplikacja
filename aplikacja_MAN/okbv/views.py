@@ -3,7 +3,7 @@ from builtins import filter
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import UploadFileForm
-from .models import OkbvFile,Bus, NachtragFromDb
+from .models import OkbvFile,Bus, NachtragFromDb, NachtragFromFile
 
 
 def home(request):
@@ -51,6 +51,7 @@ def read_file(request, file_name):
 def start_file_processing(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
     file_object.download_data_from_db()
+    file_object.create_nachtrag_from_file()
     return redirect('okbv:files_list')
 
 
@@ -63,15 +64,11 @@ def show_data_from_db(request, file_name):
         'bus_list': bus_list,
     })
 
-def compare_file_with_db(request, file_name):
+def show_data_from_file(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
-    result = file_object.convert_file_to_dict()
-    result2 = file_object.compare_file_with_db()
-    for lub_nr, nachtrags_list in result2.items():
-        print('LUB_NR ', lub_nr)
-        for nachtrag in nachtrags_list:
-            if nachtrag in result[lub_nr]:
-                print("znaleziono ", nachtrag)
-            else:
-                print("NIE znaleziono ", nachtrag)
-    return HttpResponse(str(result2))
+    bus_list = Bus.objects.filter(from_file=file_object)
+    for bus in bus_list:
+        bus.nachtrag = NachtragFromFile.objects.filter(bus=bus).order_by('version')
+    return render(request, 'file_processing.html', {
+        'bus_list': bus_list,
+    })

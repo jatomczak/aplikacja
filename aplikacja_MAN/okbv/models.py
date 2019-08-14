@@ -83,19 +83,8 @@ class OkbvFile(models.Model):
                 bus.save()
                 bus.create_nachtrag_from_db(cursor)
 
-    def compare_file_with_db(self):
-        result = {}
-        bus_list = Bus.objects.filter(from_file=self)
-        for bus in bus_list:
-            nachtrags_list = NachtragFromDb.objects.filter(bus=bus)
-            for nachtrag in nachtrags_list:
-                if bus.lub_nr not in result:
-                    result[bus.lub_nr] = []
-                result[bus.lub_nr].append(nachtrag.to_dict())
-        return result
 
-    def convert_file_to_dict(self):
-        result = {}
+    def create_nachtrag_from_file(self):
         with open(self.file.path) as f:
             f_csv = InsensitiveDictReader(f, delimiter=';')
             for row in f_csv:
@@ -103,15 +92,12 @@ class OkbvFile(models.Model):
                 version = row[self.file_headers['version']]
                 type = row[self.file_headers['type']]
                 status = row[self.file_headers['status']]
-                row_to_dict = {'version': version,
-                               'type': type,
-                               'status': status,
-                               }
-                if lub_nr not in result:
-                    result[lub_nr] = []
-
-                result[lub_nr].append(row_to_dict)
-        return result
+                nachtrag = NachtragFromFile()
+                nachtrag.bus = Bus.objects.get(lub_nr=lub_nr, from_file=self)
+                nachtrag.version = version
+                nachtrag.type = type
+                nachtrag.status = status
+                nachtrag.save()
 
 class Bus(models.Model):
     bus_nr = models.CharField(max_length=20, null=True)
@@ -157,6 +143,7 @@ class Nachtrag(models.Model):
     status_date = models.DateField(null=True)
 
     class Meta:
+        abstract = True
         unique_together = ('bus', 'version', 'type')
 
     def to_dict(self):
@@ -170,5 +157,5 @@ class NachtragFromDb(Nachtrag):
     pass
 
 
-class NachtragFromDbFromFile(Nachtrag):
+class NachtragFromFile(Nachtrag):
     pass
