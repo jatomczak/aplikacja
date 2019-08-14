@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>compare</title>
+</head>
+<body>
+
+<table>
+    <th>LUB_NR</th>
+    <th>VERSION</th>
+    <th>STATUS</th>
+{% for nachtrag in new_nachtrags %}
+    <tr>
+        <td>{{ nachtrag.bus.lub_nr }}</td>
+        <td>{{ nachtrag.version }}</td>
+        <td>{{ nachtrag.type }}</td>
+        <td>{{ nachtrag.status }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

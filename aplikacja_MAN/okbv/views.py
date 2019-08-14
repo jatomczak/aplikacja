@@ -64,6 +64,7 @@ def show_data_from_db(request, file_name):
         'bus_list': bus_list,
     })
 
+
 def show_data_from_file(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
     bus_list = Bus.objects.filter(from_file=file_object)
@@ -72,3 +73,28 @@ def show_data_from_file(request, file_name):
     return render(request, 'file_processing.html', {
         'bus_list': bus_list,
     })
+
+def compare_data(request, file_name):
+    file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
+    bus_list = Bus.objects.filter(from_file=file_object)
+    new_nachtrags = []
+    for bus in bus_list:
+        bus.nachtrag = NachtragFromDb.objects.filter(bus=bus)
+        for nachtrag in bus.nachtrag:
+            if not NachtragFromFile.objects.filter(bus=bus, version=nachtrag.version).exists():
+                new_nachtrags.append(nachtrag)
+    return render(request, 'compare_data.html', {
+        'new_nachtrags': new_nachtrags,
+    })
+
+
+
+
+
+
+
+
+
+
+
+
