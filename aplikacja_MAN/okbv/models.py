@@ -41,6 +41,7 @@ class OkbvFile(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     file = models.FileField(upload_to=file_path, validators=[FileExtensionValidator_PL(allowed_extensions=['csv'])])
+    is_file_processing = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('owner', 'name')

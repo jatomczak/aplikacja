@@ -52,6 +52,8 @@ def start_file_processing(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
     file_object.download_data_from_db()
     file_object.create_nachtrag_from_file()
+    file_object.is_file_processing = True
+    file_object.save()
     return redirect('okbv:files_list')
 
 
@@ -78,13 +80,22 @@ def compare_data(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
     bus_list = Bus.objects.filter(from_file=file_object)
     new_nachtrags = []
+    change_status = []
     for bus in bus_list:
         bus.nachtrag = NachtragFromDb.objects.filter(bus=bus)
         for nachtrag in bus.nachtrag:
-            if not NachtragFromFile.objects.filter(bus=bus, version=nachtrag.version).exists():
+            if not NachtragFromFile.objects.filter(bus=bus,
+                                                   version=nachtrag.version,
+                                                   type=nachtrag.type).exists():
                 new_nachtrags.append(nachtrag)
+            elif not NachtragFromFile.objects.filter(bus=bus,
+                                                     version=nachtrag.version,
+                                                     type=nachtrag.type,
+                                                     status=nachtrag.status).exists():
+                change_status.append(nachtrag)
     return render(request, 'compare_data.html', {
         'new_nachtrags': new_nachtrags,
+        'change_status': change_status,
     })
 
 

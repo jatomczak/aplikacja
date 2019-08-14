@@ -7,7 +7,11 @@
     {% for file in files_list %}
         <tr>
             <td>{{file.name}}</td>
+            {%if file.is_file_processing %}
             <td><a href="{%url 'okbv:read_file' file_name=file.name %}">read</a> </td>
+            {%else%}
+            <td><a href="{%url 'okbv:file_proccesing' file_name=file.name %}">START</a> </td>
+            {%endif%}
             <td><a href="{%url 'okbv:delete_file' file_name=file.name %}">delete</a> </td>
         </tr>
     {%endfor%}
