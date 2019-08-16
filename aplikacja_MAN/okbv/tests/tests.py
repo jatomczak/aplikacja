@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .oracle_db import UseOracleDb
+from okbv.oracle_db import UseOracleDb
 
 import time
 from functools import wraps
