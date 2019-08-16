@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
+from django.utils.timezone import now
 from aplikacja_MAN.settings import UPLOAD_FILE_PATH
 from clients.models import User
 from csv import DictReader
@@ -39,7 +40,7 @@ class OkbvFile(models.Model):
     }
     file_path = UPLOAD_FILE_PATH + 'okbv'
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, default=str(now())[:16])
     file = models.FileField(upload_to=file_path, validators=[FileExtensionValidator_PL(allowed_extensions=['csv'])])
     is_file_processing = models.BooleanField(default=False)
 
