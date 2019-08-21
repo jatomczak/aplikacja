@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>File_processing</title>
+</head>
+<body>
+<table>
+    <tr>LUB_NR</tr>
+    <tr>BUS_NR</tr>
+    <tr>T1</tr>
+    {%for bus in bus_list%}
+    <tr>
+        <td>{{bus.lub_nr}}</td>
+        <td>{{bus.bus_nr}}</td>
+        <td>{{bus.t1}}</td>
+        <tr>
+            <td></td>
+            <td>varsion</td>
+            <td>type</td>
+            <td>status</td>
+            <td>user</td>
+            <td>date</td>
+        </tr>
+        {% for item in bus.nachtrag %}
+            <tr>
+                <td></td>
+                <td>{{item.version}}</td>
+                <td>{{item.type}}</td>
+                <td>{{item.status}}</td>
+                <td>{{item.user}}</td>
+                <td>{{item.status_date}}</td>
+            </tr>
+        {% endfor %}
+    </tr>
+    {%endfor%}
+</table>
+
+</body>
+</html>
