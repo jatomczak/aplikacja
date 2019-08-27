@@ -40,7 +40,7 @@ class SelectTimeRangeForm(forms.ModelForm):
 
 
 class UploadFileForm(forms.ModelForm):
-    DATE_FORMAT = '%Y-%m-%d'
+    DATE_FORMAT = '%d.%m.%Y'
     user = None
 
     def create_upload_file_form(self, user):

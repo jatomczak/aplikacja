@@ -80,6 +80,8 @@ SOFTWARE = {
     'G9515': 'Slomka',
     'J0241': 'Kaczmarek',
     'I8835': 'Matwiejczyk',
+    'I8192': 'Siwierski',
+    'F7077': 'Janczak',
 }
 
 IBIS = {
