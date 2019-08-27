@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>read file</title>
+    <h4> <a href="{{request.path}}/from_file"> Dane z pliku</a> </h4>
+    <h4> <a href="{{request.path}}/from_db"> Dane z bazy danych</a> </h4>
+    <h2> <a href="{{request.path}}/compare"> Porownaj</a> </h2>
+    <h2> <a href="{%url 'okbv:files_list' %}"> POWRÓT</a> </h2>
+    <h1> zawartosc wgranego pliku</h1>
+</head>
+
+<body>
+<table>
+{% for line in text_file %}
+    <tr>
+        <td>{{line}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

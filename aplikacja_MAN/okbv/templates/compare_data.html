@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>compare</title>
+</head>
+<body>
+
+<h1>NOWE NACHTRAGI</h1>
+<table>
+    <th>LUB_NR</th>
+    <th>VERSION</th>
+    <th>STATUS</th>
+{% for nachtrag in new_nachtrags %}
+    <tr>
+        <td>{{ nachtrag.bus.lub_nr }}</td>
+        <td>{{ nachtrag.version }}</td>
+        <td>{{ nachtrag.type }}</td>
+        <td>{{ nachtrag.status }}</td>
+        <td>{{ nachtrag.status_date }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+<h1>ZMIANA STATUSU</h1>
+<table>
+    <th>LUB_NR</th>
+    <th>VERSION</th>
+    <th>STATUS</th>
+{% for nachtrag in change_status %}
+    <tr>
+        <td>{{ nachtrag.bus.lub_nr }}</td>
+        <td>{{ nachtrag.version }}</td>
+        <td>{{ nachtrag.type }}</td>
+        <td>{{ nachtrag.status }}</td>
+        <td>{{ nachtrag.status_date }}</td>
+    </tr>
+{% endfor %}
+</table>
+
+
+</body>
+</html>

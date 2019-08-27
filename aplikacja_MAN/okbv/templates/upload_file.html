@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload file</title>
+</head>
+<body>
+{%block content%}
+<p>upload file</p>
+<form method="post", enctype="multipart/form-data">
+    {%csrf_token%}
+    {{form.as_p}}
+    <button type="submit"> zaladuj plik</button>
+</form>
+{% endblock %}
+</body>
+</html>
