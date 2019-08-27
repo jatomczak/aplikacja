@@ -82,6 +82,7 @@ class OkbvFile(models.Model):
         with UseOracleDb() as cursor:
             for bus in bus_list:
                 bus.set_t1(cursor)
+                bus.set_bus_nr(cursor)
                 bus.save()
                 bus.create_nachtrag_from_db(cursor)
 
@@ -118,6 +119,14 @@ class Bus(models.Model):
         if len(result):
             if len(result[0]):
                 self.t1 = result[0][0]
+
+    def set_bus_nr(self, cursor):
+        query = "select FZNR from Beom.iwh_auftraege where lub_nr ='%s'"
+        cursor.execute(query % self.lub_nr)
+        result = cursor.fetchall()
+        if len(result):
+            if len(result[0]):
+                self.bus_nr = result[0][0]
 
     def create_nachtrag_from_db(self, cursor):
         query = "select LUB_NR, VERSION_NR, GEWERK_NAME, STATUS, STAT_USER, STATUS_DATUM " \
