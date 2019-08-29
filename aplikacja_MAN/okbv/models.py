@@ -33,10 +33,10 @@ class InsensitiveDictReader(DictReader):
 
 class OkbvFile(models.Model):
     file_headers = {
-        'lub_nr': 'LUB_NR',
+        'lub_nr': 'LUB',
         'version': 'VERSION',
-        'type': 'NACHTRAG_TYPE',
-        'status': 'NACHTRAG_STATUS',
+        'type': 'ORDER_TEAM',
+        'status': 'ORDER_STATUS',
     }
     file_path = UPLOAD_FILE_PATH + 'okbv'
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
