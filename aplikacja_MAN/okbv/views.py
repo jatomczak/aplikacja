@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import UploadFileForm
 from .models import OkbvFile,Bus, NachtragFromDb, NachtragFromFile
-
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     return HttpResponse('test')
@@ -23,6 +23,7 @@ def upload_file(request):
     })
 
 
+@login_required
 def files_list(request):
     files_list = OkbvFile.objects.filter(owner=request.user)
     return render(request, 'files_list.html', {

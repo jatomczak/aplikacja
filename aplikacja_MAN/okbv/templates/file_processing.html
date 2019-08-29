@@ -6,33 +6,27 @@
 </head>
 <body>
 <table>
-    <tr>LUB_NR</tr>
-    <tr>BUS_NR</tr>
-    <tr>T1</tr>
+    <tr><td>LUB_NR</td>
+    <td>BUS_NR</td>
+    <td>T1</td>
+    <td>version</td>
+    <td>type</td>
+    <td>status</td>
+    <td>user</td>
+    <td>date</td>
     {%for bus in bus_list%}
-    <tr>
-        <td>{{bus.lub_nr}}</td>
-        <td>{{bus.bus_nr}}</td>
-        <td>{{bus.t1}}</td>
-        <tr>
-            <td></td>
-            <td>varsion</td>
-            <td>type</td>
-            <td>status</td>
-            <td>user</td>
-            <td>date</td>
-        </tr>
         {% for item in bus.nachtrag %}
             <tr>
-                <td></td>
+                <td>{{bus.lub_nr}}</td>
+                <td>{{bus.bus_nr}}</td>
+                <td>{{bus.t1|date:'Y-m-d' }}</td>
                 <td>{{item.version}}</td>
                 <td>{{item.type}}</td>
                 <td>{{item.status}}</td>
                 <td>{{item.user}}</td>
-                <td>{{item.status_date}}</td>
+                <td>{{item.status_date|date:'Y-m-d'}}</td>
             </tr>
         {% endfor %}
-    </tr>
     {%endfor%}
 </table>
 
