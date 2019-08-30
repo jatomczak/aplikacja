@@ -14,6 +14,7 @@ def home(request):
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+        form.user = request.user
         if form.is_valid():
             form.create_upload_file_form(request.user)
             return redirect('okbv:files_list')
@@ -27,6 +28,9 @@ def upload_file(request):
 @login_required
 def files_list(request):
     files_list = OkbvFile.objects.filter(owner=request.user)
+    for file in files_list:
+        if file.errors_list:
+            file.errors_list = file.errors_list.split(';')
     return render(request, 'files_list.html', {
         'files_list': files_list
     })
@@ -52,7 +56,7 @@ def read_file(request, file_name):
 
 def start_file_processing(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
-    file_object.download_data_from_db()
+    # file_object.download_data_from_db()
     file_object.create_nachtrag_from_file()
     file_object.is_file_processing = True
     file_object.save()

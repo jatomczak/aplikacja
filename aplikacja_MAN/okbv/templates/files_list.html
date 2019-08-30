@@ -2,8 +2,12 @@
 
 <p>Twoje pliki</p>
 <a href="{%url 'okbv:upload_file' %}"><b>ZALADUJ</b></a>
+{{ errors_list }}
 <table>
     <th> Nazwa </th>
+    <th> Read </th>
+    <th> Delete </th>
+    <th> Errors </th>
     {% for file in files_list %}
         <tr>
             <td>{{file.name}}</td>
@@ -13,6 +17,13 @@
             <td><a href="{%url 'okbv:file_proccesing' file_name=file.name %}"><b>START</b></a></td>
             {%endif%}
             <td><a href="{%url 'okbv:delete_file' file_name=file.name %}">delete</a> </td>
+            {%if file.errors_list%}
+                <td>
+                {% for item in file.errors_list %}
+                    <ul>{{item}}</ul>
+                {%endfor%}
+                </td>
+            {%endif%}
         </tr>
     {%endfor%}
 </table>

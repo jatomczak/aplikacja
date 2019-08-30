@@ -43,6 +43,7 @@ class OkbvFile(models.Model):
     name = models.CharField(max_length=50)
     file = models.FileField(upload_to=file_path, validators=[FileExtensionValidator_PL(allowed_extensions=['csv'])])
     is_file_processing = models.BooleanField(default=False)
+    errors_list = models. CharField(max_length=500, default='', null=True)
 
     class Meta:
         unique_together = ('owner', 'name')
@@ -86,7 +87,6 @@ class OkbvFile(models.Model):
                 bus.save()
                 bus.create_nachtrag_from_db(cursor)
 
-
     def create_nachtrag_from_file(self):
         with open(self.file.path) as f:
             f_csv = InsensitiveDictReader(f, delimiter=';')
@@ -95,12 +95,18 @@ class OkbvFile(models.Model):
                 version = row[self.file_headers['version']]
                 type = row[self.file_headers['type']]
                 status = row[self.file_headers['status']]
-                nachtrag = NachtragFromFile()
-                nachtrag.bus = Bus.objects.get(lub_nr=lub_nr, from_file=self)
-                nachtrag.version = version
-                nachtrag.type = type
-                nachtrag.status = status
-                nachtrag.save()
+                bus = Bus.objects.get(lub_nr=lub_nr, from_file=self)
+                if not NachtragFromFile.objects.filter(bus=bus, version=version, type=type).exists():
+                    nachtrag = NachtragFromFile()
+                    nachtrag.bus = bus
+                    nachtrag.version = version
+                    nachtrag.type = type
+                    nachtrag.status = status
+                    nachtrag.save()
+                else:
+                    self.errors_list += (str(row)+';')
+                    self.save()
+
 
 class Bus(models.Model):
     bus_nr = models.CharField(max_length=20, null=True)
