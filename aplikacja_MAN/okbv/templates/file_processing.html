@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>File_processing</title>
 </head>
 <body>
+
 <table>
     <tr><td>LUB_NR</td>
     <td>BUS_NR</td>
     <td>T1</td>
+    <td>start_date</td>
     <td>version</td>
     <td>type</td>
     <td>status</td>
@@ -20,6 +21,11 @@
                 <td>{{bus.lub_nr}}</td>
                 <td>{{bus.bus_nr}}</td>
                 <td>{{bus.t1|date:'Y-m-d' }}</td>
+                {%if item.version == 1%}
+                    <td>{{bus.t1|date:'Y-m-d' }}</td>
+                {%else%}
+                    <td id="demo">{{item.start_date|date:'Y-m-d' }}</td>
+                {%endif%}
                 <td>{{item.version}}</td>
                 <td>{{item.type}}</td>
                 <td>{{item.status}}</td>

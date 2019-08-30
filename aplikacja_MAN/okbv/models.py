@@ -129,12 +129,23 @@ class Bus(models.Model):
                 self.bus_nr = result[0][0]
 
     def create_nachtrag_from_db(self, cursor):
-        query = "select LUB_NR, VERSION_NR, GEWERK_NAME, STATUS, STAT_USER, STATUS_DATUM " \
-                "from Beom.iwh_gewerke where lub_nr ='%s' and " \
-                "(GEWERK_NAME = 'IBIS' or GEWERK_NAME='Elektrik')"
+        # query = "select LUB_NR, VERSION_NR, GEWERK_NAME, STATUS, STAT_USER, STATUS_DATUM " \
+        #         "from Beom.iwh_gewerke where lub_nr ='%s' and " \
+        #         "(GEWERK_NAME = 'IBIS' or GEWERK_NAME='Elektrik')"
+
+        query = "select G.LUB_NR, G.VERSION_NR, G.GEWERK_NAME, G.STATUS, G.STAT_USER, G.STATUS_DATUM, M.DATUM_SOLL " \
+                "from Beom.iwh_gewerke G " \
+                "inner join " \
+                "Beom.iwh_meilensteine M " \
+                "on " \
+                "(M.LUB_NR = G.LUB_NR and M.VERSION_NR = G.VERSION_NR) " \
+                "where " \
+                "G.lub_nr ='%s' " \
+                "and (G.GEWERK_NAME = 'IBIS' or G.GEWERK_NAME='Elektrik')  " \
+                "and (M.MEILENSTEIN = 'T1' or M.MEILENSTEIN='Nachtrag Start')"
         cursor.execute(query % self.lub_nr)
         result = cursor.fetchall()
-        for [_, version, type, status, user, date] in result:
+        for [_, version, type, status, user, date, start_date] in result:
             nachtrag = NachtragFromDb()
             nachtrag.bus = self
             nachtrag.version = version
@@ -142,6 +153,7 @@ class Bus(models.Model):
             nachtrag.status = status
             nachtrag.user = user
             nachtrag.status_date = date
+            nachtrag.start_date = start_date
             nachtrag.save()
 
 
@@ -152,6 +164,7 @@ class Nachtrag(models.Model):
     status = models.CharField(max_length=30)
     user = models.CharField(max_length=10, null=True)
     status_date = models.DateField(null=True)
+    start_date = models.DateField(null=True)
 
     class Meta:
         abstract = True
