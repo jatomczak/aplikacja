@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from .forms import UploadFileForm
 from .models import OkbvFile,Bus, NachtragFromDb, NachtragFromFile
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import now
 
 def home(request):
     return HttpResponse('test')
@@ -17,7 +18,7 @@ def upload_file(request):
             form.create_upload_file_form(request.user)
             return redirect('okbv:files_list')
     else:
-        form = UploadFileForm()
+        form = UploadFileForm(initial={'name':str(now())[:16]})
     return render(request, 'upload_file.html', {
         'form': form,
     })
