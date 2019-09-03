@@ -83,7 +83,7 @@ class OkbvFile(models.Model):
         with UseOracleDb() as cursor:
             for bus in bus_list:
                 bus.set_t1(cursor)
-                bus.set_bus_nr(cursor)
+                bus.set_bus_nr_quantity_and_customer(cursor)
                 bus.save()
                 bus.create_nachtrag_from_db(cursor)
 
@@ -114,6 +114,8 @@ class Bus(models.Model):
     quantity = models.IntegerField(default=0)
     t1 = models.DateField(null=True)
     from_file = models.ForeignKey(OkbvFile, on_delete=models.CASCADE)
+    plan_period = models.CharField(max_length=10, null=True)
+    customer = models.CharField(max_length=50, null=True)
 
     class Meta:
         unique_together = ('from_file', 'lub_nr')
@@ -126,19 +128,15 @@ class Bus(models.Model):
             if len(result[0]):
                 self.t1 = result[0][0]
 
-    def set_bus_nr(self, cursor):
-        query = "select FZNR from Beom.iwh_auftraege where lub_nr ='%s'"
+    def set_bus_nr_quantity_and_customer(self, cursor):
+        query = "select FZNR, LOSGROESSE, KUNDE, PLANPERIODE  from Beom.iwh_auftraege where lub_nr ='%s'"
         cursor.execute(query % self.lub_nr)
         result = cursor.fetchall()
         if len(result):
             if len(result[0]):
-                self.bus_nr = result[0][0]
+                self.bus_nr, self.quantity, self.customer, self.plan_period = result[0]
 
     def create_nachtrag_from_db(self, cursor):
-        # query = "select LUB_NR, VERSION_NR, GEWERK_NAME, STATUS, STAT_USER, STATUS_DATUM " \
-        #         "from Beom.iwh_gewerke where lub_nr ='%s' and " \
-        #         "(GEWERK_NAME = 'IBIS' or GEWERK_NAME='Elektrik')"
-
         query = "select G.LUB_NR, G.VERSION_NR, G.GEWERK_NAME, G.STATUS, G.STAT_USER, G.STATUS_DATUM, M.DATUM_SOLL " \
                 "from Beom.iwh_gewerke G " \
                 "inner join " \

@@ -6,21 +6,29 @@
 <body>
 
 <table>
-    <tr><td>LUB_NR</td>
-    <td>BUS_NR</td>
-    <td>T1</td>
-    <td>start_date</td>
-    <td>version</td>
-    <td>type</td>
-    <td>status</td>
-    <td>user</td>
-    <td>date</td>
+    <tr>
+        <th>LUB_NR</th>
+        <th>BUS_NR</th>
+        <th>T1</th>
+        <th>QUANTITY</th>
+        <th>PERIODE</th>
+        <th>CUSTOMER</th>
+        <th>start_date</th>
+        <th>version</th>
+        <th>type</th>
+        <th>status</th>
+        <th>user</th>
+        <th>date</th>
+    </tr>
     {%for bus in bus_list%}
         {% for item in bus.nachtrag %}
             <tr>
                 <td>{{bus.lub_nr}}</td>
                 <td>{{bus.bus_nr}}</td>
                 <td>{{bus.t1|date:'Y-m-d' }}</td>
+                <td>{{bus.quantity}}</td>
+                <td>{{bus.plan_period}}</td>
+                <td>{{bus.customer}}</td>
                 {%if item.version == 1%}
                     <td>{{bus.t1|date:'Y-m-d' }}</td>
                 {%else%}

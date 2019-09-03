@@ -56,7 +56,7 @@ def read_file(request, file_name):
 
 def start_file_processing(request, file_name):
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
-    # file_object.download_data_from_db()
+    file_object.download_data_from_db()
     file_object.create_nachtrag_from_file()
     file_object.is_file_processing = True
     file_object.save()
