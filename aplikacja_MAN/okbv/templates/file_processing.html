@@ -2,8 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>
+        function format_date()
+        {
+            var dates_list = document.getElementsByName("date")
+            var len = dates_list.length
+            var i=0
+            var temp_text = ""
+            for(i=0; i<len; i++)
+            {
+                var d = new Date(dates_list[i].innerHTML)
+                temp_text = d.getDate() + "."  + (d.getMonth() + 1)  + "." +  d.getFullYear()
+                dates_list[i].innerHTML = temp_text
+            }
+        }
+    </script>
 </head>
 <body>
+
+<button onclick="format_date()">Change Format Date</button>
 
 <table>
     <tr>
@@ -25,20 +42,20 @@
             <tr>
                 <td>{{bus.lub_nr}}</td>
                 <td>{{bus.bus_nr}}</td>
-                <td>{{bus.t1|date:'Y-m-d' }}</td>
+                <td name="date">{{bus.t1|date:'Y-m-d' }}</td>
                 <td>{{bus.quantity}}</td>
                 <td>{{bus.plan_period}}</td>
                 <td>{{bus.customer}}</td>
                 {%if item.version == 1%}
                     <td>{{bus.t1|date:'Y-m-d' }}</td>
                 {%else%}
-                    <td id="demo">{{item.start_date|date:'Y-m-d' }}</td>
+                    <td name="date">{{item.start_date|date:'Y-m-d' }}</td>
                 {%endif%}
                 <td>{{item.version}}</td>
                 <td>{{item.type}}</td>
                 <td>{{item.status}}</td>
                 <td>{{item.user}}</td>
-                <td>{{item.status_date|date:'Y-m-d'}}</td>
+                <td name="date">{{item.status_date|date:'Y-m-d'}}</td>
             </tr>
         {% endfor %}
     {%endfor%}
