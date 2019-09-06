@@ -49,7 +49,7 @@ def read_file(request, file_name):
         return redirect('okbv:files_list')
 
     daily_change = {'found': [], 'not_found':[]}
-    result = None
+    result = {'new_auftrag': None, 'new_nachtrag': None}
     if request.method == 'POST':
         query = "SELECT LUB_NR, DATUM_IST " \
                 "FROM Beom.iwh_meilensteine " \
@@ -58,11 +58,11 @@ def read_file(request, file_name):
         query = query % request.POST
         with UseOracleDb() as cursor:
             cursor.execute(query)
-            result = cursor.fetchall()
+            result['new_auftrag'] = cursor.fetchall()
 
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
-    if result:
-        for item in result:
+    if result['new_auftrag']:
+        for item in result['new_auftrag']:
             temp_dict = {'lub_nr':item[0],'date':item[1]}
             if Bus.objects.filter(from_file=file_object, lub_nr=item[0]).exists():
                 daily_change['found'].append(temp_dict)
