@@ -8,16 +8,25 @@
 
 <h1>NOWE NACHTRAGI</h1>
 <table>
-    <th>LUB_NR</th>
+    <th>LUB</th>
+    <th>BUS_NR</th>
     <th>VERSION</th>
-    <th>STATUS</th>
+    <th>ORDER_TEAM</th>
+    <th>ORDER_STATUS</th>
+    <th>STATUS DATE</th>
+    <th>START</th>
+    <th>USER</th>
 {% for nachtrag in new_nachtrags %}
     <tr>
         <td>{{ nachtrag.bus.lub_nr }}</td>
+        <td>{{ nachtrag.bus.bus_nr }}</td>
         <td>{{ nachtrag.version }}</td>
         <td>{{ nachtrag.type }}</td>
         <td>{{ nachtrag.status }}</td>
-        <td>{{ nachtrag.status_date }}</td>
+        <td>{{ nachtrag.status_date |date:'Y-m-d'}}</td>
+        <td>{{ nachtrag.start_date |date:'Y-m-d'}}</td>
+        <td>{{ nachtrag.user }}</td>
+
     </tr>
 {% endfor %}
 </table>
@@ -25,15 +34,21 @@
 <h1>ZMIANA STATUSU</h1>
 <table>
     <th>LUB_NR</th>
+    <th>BUS_NR</th>
     <th>VERSION</th>
+    <th>TEAM</th>
     <th>STATUS</th>
+    <th>STATUS DATE</th>
+    <th>USER</th>
 {% for nachtrag in change_status %}
     <tr>
         <td>{{ nachtrag.bus.lub_nr }}</td>
+        <td>{{ nachtrag.bus.bus_nr }}</td>
         <td>{{ nachtrag.version }}</td>
         <td>{{ nachtrag.type }}</td>
         <td>{{ nachtrag.status }}</td>
-        <td>{{ nachtrag.status_date }}</td>
+        <td>{{ nachtrag.status_date |date:'Y-m-d' }}</td>
+        <td>{{ nachtrag.user }}</td>
     </tr>
 {% endfor %}
 </table>

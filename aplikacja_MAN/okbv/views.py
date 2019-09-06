@@ -5,6 +5,8 @@ from django.http import HttpResponse
 from .forms import UploadFileForm
 from .models import OkbvFile,Bus, NachtragFromDb, NachtragFromFile
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import now
+from .oracle_db import UseOracleDb
 
 def home(request):
     return HttpResponse('test')
@@ -13,11 +15,12 @@ def home(request):
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+        form.user = request.user
         if form.is_valid():
             form.create_upload_file_form(request.user)
             return redirect('okbv:files_list')
     else:
-        form = UploadFileForm()
+        form = UploadFileForm(initial={'name':str(now())[:16]})
     return render(request, 'upload_file.html', {
         'form': form,
     })
@@ -26,8 +29,11 @@ def upload_file(request):
 @login_required
 def files_list(request):
     files_list = OkbvFile.objects.filter(owner=request.user)
+    for file in files_list:
+        if file.errors_list:
+            file.errors_list = file.errors_list.split(';')
     return render(request, 'files_list.html', {
-        'files_list': files_list
+        'files_list': files_list,
     })
 
 
@@ -42,10 +48,31 @@ def read_file(request, file_name):
     if not OkbvFile.objects.filter(owner=request.user, name=file_name).exists():
         return redirect('okbv:files_list')
 
+    daily_change = {'found': [], 'not_found':[]}
+    result = {'new_auftrag': None, 'new_nachtrag': None}
+    if request.method == 'POST':
+        query = "SELECT LUB_NR, DATUM_IST " \
+                "FROM Beom.iwh_meilensteine " \
+                "where (DATUM_IST>=TO_DATE('%(daily_date)s', 'YYYY-MM-DD') and MEILENSTEIN='T1') " \
+                "ORDER BY DATUM_IST"
+        query = query % request.POST
+        with UseOracleDb() as cursor:
+            cursor.execute(query)
+            result['new_auftrag'] = cursor.fetchall()
+
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
+    if result['new_auftrag']:
+        for item in result['new_auftrag']:
+            temp_dict = {'lub_nr':item[0],'date':item[1]}
+            if Bus.objects.filter(from_file=file_object, lub_nr=item[0]).exists():
+                daily_change['found'].append(temp_dict)
+            else:
+                daily_change['not_found'].append(temp_dict)
+
     text_file = file_object.read_file()
     return render(request, 'read_file.html', {
-        'text_file': text_file
+        'text_file': text_file,
+        'daily_change': daily_change
     })
 
 
