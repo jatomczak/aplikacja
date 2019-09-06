@@ -6,6 +6,7 @@ from .forms import UploadFileForm
 from .models import OkbvFile,Bus, NachtragFromDb, NachtragFromFile
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
+from .oracle_db import UseOracleDb
 
 def home(request):
     return HttpResponse('test')
@@ -32,7 +33,7 @@ def files_list(request):
         if file.errors_list:
             file.errors_list = file.errors_list.split(';')
     return render(request, 'files_list.html', {
-        'files_list': files_list
+        'files_list': files_list,
     })
 
 
@@ -47,10 +48,31 @@ def read_file(request, file_name):
     if not OkbvFile.objects.filter(owner=request.user, name=file_name).exists():
         return redirect('okbv:files_list')
 
+    daily_change = {'found': [], 'not_found':[]}
+    result = None
+    if request.method == 'POST':
+        query = "SELECT LUB_NR, DATUM_IST " \
+                "FROM Beom.iwh_meilensteine " \
+                "where (DATUM_IST>=TO_DATE('%(daily_date)s', 'YYYY-MM-DD') and MEILENSTEIN='T1') " \
+                "ORDER BY DATUM_IST"
+        query = query % request.POST
+        with UseOracleDb() as cursor:
+            cursor.execute(query)
+            result = cursor.fetchall()
+
     file_object = OkbvFile.objects.get(owner=request.user, name=file_name)
+    if result:
+        for item in result:
+            temp_dict = {'lub_nr':item[0],'date':item[1]}
+            if Bus.objects.filter(from_file=file_object, lub_nr=item[0]).exists():
+                daily_change['found'].append(temp_dict)
+            else:
+                daily_change['not_found'].append(temp_dict)
+
     text_file = file_object.read_file()
     return render(request, 'read_file.html', {
-        'text_file': text_file
+        'text_file': text_file,
+        'daily_change': daily_change
     })
 
 

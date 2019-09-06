@@ -1,22 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        function show_table()
+        {
+            var table = document.getElementById("file_content")
+            var button = document.getElementById("btn_show_table")
+            if (table.style.visibility == "visible")
+            {
+                table.style.visibility = "hidden"
+                button.innerHTML = "SHOW"
+            }
+            else
+            {
+                table.style.visibility = "visible"
+                button.innerHTML = "HIDE"
+            }
+        }
+
+    </script>
     <meta charset="UTF-8">
     <title>read file</title>
     <h4> <a href="{{request.path}}/from_file"> Dane z pliku</a> </h4>
     <h4> <a href="{{request.path}}/from_db"> Dane z bazy danych</a> </h4>
     <h2> <a href="{{request.path}}/compare"> Porownaj</a> </h2>
     <h2> <a href="{%url 'okbv:files_list' %}"> POWRÓT</a> </h2>
-    <h1> zawartosc wgranego pliku</h1>
+
 </head>
 
 <body>
-<table>
+<p>POROWNANIE DZIENNE
+<form method="post">
+    {% csrf_token %}
+    <input type="date" name='daily_date' placeholder="wybierz date">
+    <button type="submit">Compare</button>
+</form>
+</p>
+
+<p> zawartosc wgranego pliku
+<button id="btn_show_table" onclick="show_table()">SHOW</button>
+</p>
+
+<table id="daily_change">
+    <tr><td><h4>NOT FOUND</h4></td></tr>
+    <tr>
+        <th>LUB_NR</th>
+        <th>DATE</th>
+    </tr>
+    {% for line in daily_change.not_found %}
+    <tr>
+        <td>{{line.lub_nr}}</td>
+        <td>{{line.date | date:'Y-m-d'}}</td>
+    </tr>
+    {% endfor %}
+
+    <tr><td><h4>FOUND</h4></td></tr>
+    <tr>
+        <th>LUB_NR</th>
+        <th>DATE</th>
+    </tr>
+    {% for line in daily_change.found %}
+    <tr>
+        <td>{{line.lub_nr}}</td>
+        <td>{{line.date | date:'Y-m-d'}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<table id="file_content" style="visibility: hidden;">
 {% for line in text_file %}
     <tr>
         <td>{{line}}</td>
     </tr>
     {% endfor %}
 </table>
+
 </body>
 </html>
