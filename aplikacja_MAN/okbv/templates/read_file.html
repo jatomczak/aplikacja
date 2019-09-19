@@ -20,54 +20,84 @@
 
     </script>
     <meta charset="UTF-8">
+    <title>Files List</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	{% load static %}
+	<link href="{% static 'css/vivify.min.css' %}" rel="stylesheet" type="text/css"/>
+    <meta charset="UTF-8">
     <title>read file</title>
-    <h4> <a href="{{request.path}}/from_file"> Dane z pliku</a> </h4>
-    <h4> <a href="{{request.path}}/from_db"> Dane z bazy danych</a> </h4>
-    <h2> <a href="{{request.path}}/compare"> Porownaj</a> </h2>
-    <h2> <a href="{%url 'okbv:files_list' %}"> POWRÓT</a> </h2>
+
 
 </head>
 
 <body>
-<p>POROWNANIE DZIENNE
-<form method="post">
-    {% csrf_token %}
-    <input type="date" name='daily_date' placeholder="wybierz date">
-    <button type="submit">Compare</button>
-</form>
-</p>
+<div class="fluid-container text-left">
+    <div class="container harm-window  vivify  pullUp">
+        <h4> <a href="{{request.path}}/from_file" > Data from file</a> </h4>
+        <h4> <a href="{{request.path}}/from_db">Data from database</a> </h4>
+        <h3> <a href="{{request.path}}/compare"> SHOW DIFFERENCES</a> </h3>
+        <br>
+        <br>
+        <h4>FIND NEW AUFTRAG FROM DATE </h4>
+        <form method="post">
+            {% csrf_token %}
+            <input type="date" name='daily_date' placeholder="wybierz date">
+            <button type="submit">FIND</button>
+        </form>
+        <br>
+        <h4> FILE CONTENT </h4>
+        <button id="btn_show_table" onclick="show_table()">SHOW</button>
+        <br>
+        <br>
+        <br>
+        <h5> <a href="{%url 'okbv:files_list' %}"> Files list</a> </h5>
+    </div>
+</div>
 
-<p> zawartosc wgranego pliku
-<button id="btn_show_table" onclick="show_table()">SHOW</button>
-</p>
 
-<table id="daily_change">
-    <tr><td><h4>NOT FOUND</h4></td></tr>
-    <tr>
-        <th>LUB_NR</th>
-        <th>DATE</th>
-    </tr>
-    {% for line in daily_change.not_found %}
-    <tr>
-        <td>{{line.lub_nr}}</td>
-        <td>{{line.date | date:'Y-m-d'}}</td>
-    </tr>
-    {% endfor %}
+<div class="fluid-container text-left">
 
-    <tr><td><h4>FOUND</h4></td></tr>
-    <tr>
-        <th>LUB_NR</th>
-        <th>DATE</th>
-    </tr>
-    {% for line in daily_change.found %}
-    <tr>
-        <td>{{line.lub_nr}}</td>
-        <td>{{line.date | date:'Y-m-d'}}</td>
-    </tr>
-    {% endfor %}
-</table>
+    <table id="daily_change" class="harm-table vivify  fadeInBottom">
+        <tr>
+            <td colspan="2">
+                <h5>NEW AUFTRAG LIST<h5>
+            </td>
+        </tr>
+        <tr><th colspan="2">NOT FOUND IN FILE</th></tr>
+        <tr>
+            <th>LUB_NR</th>
+            <th>DATE</th>
+        </tr>
+        {% for line in daily_change.not_found %}
+        <tr>
+            <td>{{line.lub_nr}}</td>
+            <td>{{line.date | date:'Y-m-d'}}</td>
+        </tr>
+        {% endfor %}
 
-<table id="file_content" style="visibility: hidden;">
+        <tr><th colspan="2">FOUND IN FILE</th></tr>
+        <tr>
+            <th>LUB_NR</th>
+            <th>DATE</th>
+        </tr>
+        {% for line in daily_change.found %}
+        <tr>
+            <td>{{line.lub_nr}}</td>
+            <td>{{line.date | date:'Y-m-d'}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<table id="file_content" style="visibility: hidden;" class="harm-table vivify  fadeInBottom">
 {% for line in text_file %}
     <tr>
         <td>{{line}}</td>
