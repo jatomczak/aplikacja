@@ -1,6 +1,6 @@
 <head>
     <meta charset="UTF-8">
-    <title>HARMONOGRAM</title>
+    <title>Files List</title>
 
     <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -18,36 +18,38 @@
 <body class="harm-body">
 
 <div class="fluid-container text-center">
-<div class="container harm-window  vivify  pullUp">
-    <h1>Your files</h1>
-    <form action="upload" method="get">
-    <button class=" standard-button fadeIn" type="submit"><b>UPLOAD FILE</b></button>
+
+    <div class="container harm-window  vivify  pullUp">
+        <h1>Your files</h1>
+        <form action="upload" method="get">
+            <button class=" standard-button fadeIn" type="submit"><b>UPLOAD NEW FILE</b></button>
         </form>
-    {{ errors_list }}
-</div>
-<table class="harm-table vivify  fadeInBottom">
-    <th> Nazwa </th>
-    <th> Read </th>
-    <th> Delete </th>
-    <th> Errors </th>
-    {% for file in files_list %}
-        <tr>
-            <td>{{file.name}}</td>
-            {%if file.is_file_processing %}
-            <td><a href="{%url 'okbv:read_file' file_name=file.name %}">read</a> </td>
-            {%else%}
-            <td><a href="{%url 'okbv:file_proccesing' file_name=file.name %}"><b>START</b></a></td>
-            {%endif%}
-            <td><a href="{%url 'okbv:delete_file' file_name=file.name %}">delete</a> </td>
-            {%if file.errors_list%}
-                <td>
-                {% for item in file.errors_list %}
-                    <ul>{{item}}</ul>
-                {%endfor%}
-                </td>
-            {%endif%}
-        </tr>
-    {%endfor%}
+        {{ errors_list }}
+    </div>
+
+    <table class="harm-table vivify  fadeInBottom">
+        <th> File Name </th>
+        <th> action </th>
+        <th> Delete </th>
+        <th> Errors </th>
+        {% for file in files_list %}
+            <tr>
+                <td>{{file.name}}</td>
+                {%if file.is_file_processing %}
+                <td><a href="{%url 'okbv:read_file' file_name=file.name %}">read</a> </td>
+                {%else%}
+                <td><a href="{%url 'okbv:file_proccesing' file_name=file.name %}"><b>START</b></a></td>
+                {%endif%}
+                <td><a href="{%url 'okbv:delete_file' file_name=file.name %}">delete</a> </td>
+                {%if file.errors_list%}
+                    <td>
+                    {% for item in file.errors_list %}
+                        <ul>{{item}}</ul>
+                    {%endfor%}
+                    </td>
+                {%endif%}
+            </tr>
+        {%endfor%}
 </table>
 </div>
 
