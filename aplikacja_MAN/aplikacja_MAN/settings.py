@@ -25,7 +25,7 @@ SECRET_KEY = 'r6ymvjyu0bx&gh64xn6fp-fy(y@+b%61(*a5)m91%195^7&iw0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.131.80.125']
+ALLOWED_HOSTS = ['10.131.80.125', '127.0.0.1']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'planowanie',
     'schedule',
     'okbv',
+    'emcos_form',
 ]
 
 AUTH_USER_MODEL = 'clients.User'

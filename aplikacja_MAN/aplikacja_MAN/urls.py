@@ -27,5 +27,6 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('planowanie/', include('planowanie.urls')),
     path('harmonogram/', include('schedule.urls')),
-    path('okbv/', include('okbv.urls'))
+    path('okbv/', include('okbv.urls')),
+    path('emcos_form/', include('emcos_form.urls')),
 ]
