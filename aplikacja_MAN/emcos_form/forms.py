@@ -8,10 +8,13 @@ class BusForm(forms.ModelForm):
         model = EmcosTask
         fields = '__all__'
         widgets = {
+            'fassung_date': forms.DateInput(attrs={
+                'type':'date',
+            }),
             'additional_comments': forms.Textarea(attrs={
                 'rows': 10,
                 'cols': 50,
-                'placeholder': 'dodatkowy komentarz'
+                'placeholder': 'additional comments',
             }
             )
         }

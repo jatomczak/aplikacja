@@ -7,7 +7,6 @@
 </head>
 <body>
 {%block content%}
-<p>upload file</p>
 <form method="post">
     {%csrf_token%}
     {{form.as_p}}
@@ -18,13 +17,13 @@
 <table border=1>
     <tr>
         <td>Tittle</td>
-        <td>tu bedzie tytul</td>
+        <td>{{task.task_type.task_type_text}} {{task.bus_nr}} WERK: {{task.factory.factory_letter}}</td>
     </tr>
     <tr>
         <td>Content</td>
         <td>
-            Bus Nr: {{Bus.bus_nr.value}}
-            Fassung: {{Bus.fassung_date}}
+            Bus Nr: {{task.bus_nr}} <br>
+            Fassung: {{task.fassung_date}}
         </td>
     </tr>
 </table>

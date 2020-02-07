@@ -7,11 +7,11 @@ from .models import Bus
 def home_view(request):
     form = BusForm()
     if request.method == 'POST':
-        task = BusForm(request.POST)
-        task.save(commit=False)
+        task_form = BusForm(request.POST)
+        task = task_form.save(commit=False)
         return render(request, 'emcos_form_home.html', {
             'form': form,
-            'Bus': task,
+            'task': task,
         })
     return render(request, 'emcos_form_home.html', {
         'form': form,

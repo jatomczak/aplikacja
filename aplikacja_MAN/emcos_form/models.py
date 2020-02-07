@@ -38,5 +38,6 @@ class Bus(models.Model):
 
 
 class EmcosTask(Bus):
+    time_quantity = models.IntegerField(default=8)
     task_type = models.ForeignKey(TaskType, on_delete=models.SET_NULL, null=True)
     additional_comments = models.CharField(max_length=500, null=True)
