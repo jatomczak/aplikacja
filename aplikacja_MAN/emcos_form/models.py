@@ -1,10 +1,15 @@
 from django.db import models
 
+class Facory(models.Model):
+    facotry_name = models.CharField(max_length=30, unique=True, null=False)
+    factory_letter = models.CharField(max_length=1, unique=True, null=False)
+
 class Bus(models.Model):
     bus_nr = models.CharField(max_length=20, null=True)
     lub_nr = models.CharField(max_length=20)
     quantity = models.IntegerField(default=0)
     fassung_date = models.DateField(null=True)
+    factory = models.ForeignKey(Facory, on_delete=models.SET_NULL, null=True)
 
     def set_t1(self, cursor):
         query = "select DATUM_IST from Beom.iwh_meilensteine where lub_nr ='%s' and MEILENSTEIN='T1'"
@@ -21,19 +26,3 @@ class Bus(models.Model):
         if len(result):
             if len(result[0]):
                 self.bus_nr = result[0][0]
-
-    def create_nachtrag_from_db(self, cursor):
-        query = "select LUB_NR, VERSION_NR, GEWERK_NAME, STATUS, STAT_USER, STATUS_DATUM " \
-                "from Beom.iwh_gewerke where lub_nr ='%s' and " \
-                "(GEWERK_NAME = 'IBIS' or GEWERK_NAME='Elektrik')"
-        cursor.execute(query % self.lub_nr)
-        result = cursor.fetchall()
-        for [_, version, type, status, user, date] in result:
-            nachtrag = NachtragFromDb()
-            nachtrag.bus = self
-            nachtrag.version = version
-            nachtrag.type = type
-            nachtrag.status = status
-            nachtrag.user = user
-            nachtrag.status_date = date
-            nachtrag.save()
