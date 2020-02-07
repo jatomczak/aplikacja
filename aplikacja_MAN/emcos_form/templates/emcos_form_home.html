@@ -2,16 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Upload file</title>
+    <title>Emcos Form</title>
+    <h1>EMCOS FORM</h1>
 </head>
 <body>
 {%block content%}
 <p>upload file</p>
-<form method="post", enctype="multipart/form-data">
+<form method="post">
     {%csrf_token%}
     {{form.as_p}}
-    <button type="submit"> zaladuj plik</button>
+    <button type="submit"> Start</button>
 </form>
 {% endblock %}
+
+<table border=1>
+    <tr>
+        <td>Tittle</td>
+        <td>tu bedzie tytul</td>
+    </tr>
+    <tr>
+        <td>Content</td>
+        <td>
+            Bus Nr: {{Bus.bus_nr.value}}
+            Fassung: {{Bus.fassung_date}}
+        </td>
+    </tr>
+</table>
+
 </body>
 </html>

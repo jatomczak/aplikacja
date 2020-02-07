@@ -1,28 +1,27 @@
 from django.db import models
 
-class Facory(models.Model):
-    facotry_name = models.CharField(max_length=30, unique=True, null=False)
+
+class Factory(models.Model):
+    factory_name = models.CharField(max_length=30, unique=True, null=False)
     factory_letter = models.CharField(max_length=1, unique=True, null=False)
+
+    def __str__(self):
+        return self.factory_name
+
+class TaskType(models.Model):
+    task_type = models.CharField(max_length=50, unique=True, null=False)
+    task_type_text = models.CharField(max_length=50, unique=True, null=False)
+
+    def __str__(self):
+        return self.task_type
+
 
 class Bus(models.Model):
     bus_nr = models.CharField(max_length=20, null=True)
     lub_nr = models.CharField(max_length=20)
     quantity = models.IntegerField(default=0)
     fassung_date = models.DateField(null=True)
-    factory = models.ForeignKey(Facory, on_delete=models.SET_NULL, null=True)
+    factory = models.ForeignKey(Factory, on_delete=models.SET_NULL, null=True)
 
-    def set_t1(self, cursor):
-        query = "select DATUM_IST from Beom.iwh_meilensteine where lub_nr ='%s' and MEILENSTEIN='T1'"
-        cursor.execute(query % self.lub_nr)
-        result = cursor.fetchall()
-        if len(result):
-            if len(result[0]):
-                self.t1 = result[0][0]
-
-    def set_bus_nr(self, cursor):
-        query = "select FZNR from Beom.iwh_auftraege where lub_nr ='%s'"
-        cursor.execute(query % self.lub_nr)
-        result = cursor.fetchall()
-        if len(result):
-            if len(result[0]):
-                self.bus_nr = result[0][0]
+class EmcosTask(Bus):
+    task_type = models.ForeignKey(TaskType, on_delete=models.SET_NULL, null=True)
