@@ -9,8 +9,6 @@ def home_view(request):
     if request.method == 'POST':
         task = BusForm(request.POST)
         task.save(commit=False)
-        task.download_data_from_db()
-        task.save()
         return render(request, 'emcos_form_home.html', {
             'form': form,
             'Bus': task,

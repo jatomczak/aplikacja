@@ -1,5 +1,5 @@
 from django.db import models
-
+from .oracle_db import UseOracleDb
 
 class Factory(models.Model):
     factory_name = models.CharField(max_length=30, unique=True, null=False)
@@ -23,5 +23,20 @@ class Bus(models.Model):
     fassung_date = models.DateField(null=True)
     factory = models.ForeignKey(Factory, on_delete=models.SET_NULL, null=True)
 
+
+    def set_fassung_date(self, cursor):
+        query = "select fassdat from avis.a01 where fznr ='%s'"
+        cursor.execute(query % self.bus_nr)
+        result = cursor.fetchall()
+        if len(result):
+            if len(result[0]):
+                self.fassung_date = result[0][0]
+
+    def download_data_from_db(self):
+        with UseOracleDb() as cursor:
+            self.set_fassung_date(cursor)
+
+
 class EmcosTask(Bus):
     task_type = models.ForeignKey(TaskType, on_delete=models.SET_NULL, null=True)
+    additional_comments = models.CharField(max_length=500, null=True)
